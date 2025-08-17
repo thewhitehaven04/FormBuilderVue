@@ -40,7 +40,7 @@ import { RouterLink } from 'vue-router'
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 8px;
+  gap: 16px;
 }
 
 .row {
