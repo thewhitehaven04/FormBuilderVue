@@ -1,0 +1,14 @@
+/** define padding sizes */
+
+:root {
+  --p-xs: 4px;
+  --p-sm: 8px;
+  --p-md: 16px;
+  --p-lg: 24px;
+  --p-xl: 32px;
+  --m-xs: 4px;
+  --m-sm: 8px;
+  --m-md: 16px;
+  --m-lg: 24px;
+  --m-xl: 32px;
+}
