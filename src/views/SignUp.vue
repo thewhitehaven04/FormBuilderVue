@@ -6,20 +6,20 @@ import { z } from 'zod'
 import { signUp } from '@/services/auth.ts'
 import router from '@/router'
 import { ref } from 'vue'
+import { toTypedSchema } from '@vee-validate/zod'
 
-const signUpSchema = z.object({
+const schema = z.object({
   name: z.string().min(1),
   lastName: z.string().min(1),
-  email: z.email({
-    error: 'Email address is required',
-  }),
-  password: z.string().min(8, { error: 'Password must be at least 8 characters' }),
-  confirm: z.string().min(8, { error: 'Confirmation must match the password' }),
+  email: z.string().email('Email field must not be empty'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirm: z.string().min(8, 'Confirmation must match the password'),
 })
 
-type TFormSchema = z.infer<typeof signUpSchema>
+type TFormSchema = z.infer<typeof schema>
+const signUpSchema = toTypedSchema(schema)
 
-const { defineField, errors, handleSubmit } = useForm<TFormSchema>({
+const { defineField, errors, handleSubmit, handleReset, submitCount } = useForm<TFormSchema>({
   validationSchema: signUpSchema,
 })
 
@@ -38,7 +38,7 @@ const onSubmit = handleSubmit(async (data) => {
     firstName: data.name,
     password: data.password,
   })
-  console.log('event handler engaged')
+
   if (!result.error) {
     isSuccessMessageShown.value = true
     setTimeout(() => {
@@ -54,7 +54,7 @@ const onSubmit = handleSubmit(async (data) => {
       <template #title>Register</template>
       <template #subtitle>Sign up with your email address.</template>
       <template #content>
-        <form @submit="onSubmit">
+        <form id="form" @submit="onSubmit" @reset="handleReset()">
           <div class="input-container">
             <InputText
               type="text"
@@ -62,8 +62,13 @@ const onSubmit = handleSubmit(async (data) => {
               placeholder="Name"
               v-model="name"
               v-bind="nameProps"
+              required
             />
-            <Message v-if="!!errors.name" severity="error" variant="simple"
+            <Message
+              v-if="!!errors.name && submitCount > 0"
+              severity="error"
+              variant="simple"
+              size="small"
               >{{ errors.name }}}
             </Message>
           </div>
@@ -74,8 +79,13 @@ const onSubmit = handleSubmit(async (data) => {
               placeholder="Last name"
               v-model="lastName"
               v-bind="lastNameProps"
+              required
             />
-            <Message v-if="!!errors.lastName" severity="error" variant="simple"
+            <Message
+              v-if="!!errors.lastName && submitCount > 0"
+              severity="error"
+              variant="simple"
+              size="small"
               >{{ errors.lastName }}}
             </Message>
           </div>
@@ -86,8 +96,13 @@ const onSubmit = handleSubmit(async (data) => {
               placeholder="Email"
               v-model="email"
               v-bind="emailProps"
+              required
             />
-            <Message v-if="!!errors.email" severity="error" variant="simple"
+            <Message
+              v-if="!!errors.email && submitCount > 0"
+              severity="error"
+              variant="simple"
+              size="small"
               >{{ errors.email }}}
             </Message>
           </div>
@@ -99,8 +114,13 @@ const onSubmit = handleSubmit(async (data) => {
               placeholder="Password"
               v-model="password"
               v-bind="passwordProps"
+              required
             />
-            <Message v-if="!!errors.password" severity="error" variant="simple"
+            <Message
+              v-if="!!errors.password && submitCount > 0"
+              severity="error"
+              variant="simple"
+              size="small"
               >{{ errors.password }}}
             </Message>
           </div>
@@ -112,20 +132,30 @@ const onSubmit = handleSubmit(async (data) => {
               placeholder="Confirm Password"
               v-model="confirmPassword"
               v-bind="confirmPasswordProps"
+              required
             />
-            <Message v-if="!!errors.confirm" severity="error" variant="simple"
+            <Message
+              v-if="!!errors.confirm && submitCount > 0"
+              severity="error"
+              variant="simple"
+              size="small"
               >{{ errors.confirm }}}
             </Message>
           </div>
           <Button type="submit">Sign up</Button>
-          <Message v-if="isSuccessMessageShown" severity="success" variant="success">
+          <Message
+            v-if="isSuccessMessageShown && submitCount > 0"
+            severity="success"
+            variant="success"
+            size="small"
+          >
             The sign-up is successful. Transfering you to login page...
           </Message>
         </form>
       </template>
       <template #footer>
         <div class="footer">
-          <Button type="reset" variant="outlined">Reset</Button>
+          <Button type="reset" form="form" variant="outlined" @reset="handleReset">Reset</Button>
           <div class="footer-row">
             Already got an account?
             <RouterLink to="/sign-in">Sign in</RouterLink>
@@ -169,6 +199,7 @@ input {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  height: 48px;
 }
 
 .section {

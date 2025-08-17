@@ -1,7 +1,43 @@
 <script setup lang="ts">
-import { InputText, Button } from 'primevue'
-import Card from 'primevue/card';
+import { InputText, Button, Message } from 'primevue'
+import Card from 'primevue/card'
 import { RouterLink } from 'vue-router'
+import { z } from 'zod'
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import { signIn } from '@/services/auth.ts'
+import router from '@/router'
+import { ref } from 'vue'
+
+const schema = z.object({
+  email: z.string().email('Email field must not be empty'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+})
+
+const validationSchema = toTypedSchema(schema)
+
+type TSignInSchema = z.infer<typeof schema>
+
+const { handleSubmit, handleReset, defineField } = useForm<TSignInSchema>({
+  validationSchema,
+})
+
+const [email, emailProps] = defineField('email')
+const [password, passwordProps] = defineField('password')
+const isErrorShown = ref(false)
+
+const onSubmit = handleSubmit(async (data) => {
+  const { error } = await signIn({
+    password: data.password,
+    email: data.email,
+  })
+
+  if (!error) {
+    await router.push('/')
+  } else {
+    isErrorShown.value = true
+  }
+})
 </script>
 
 <template>
@@ -10,10 +46,25 @@ import { RouterLink } from 'vue-router'
       <template #title>Sign in</template>
       <template #subtitle>Sign in with your email address.</template>
       <template #content>
-        <form>
-          <InputText name="email" type="email" placeholder="Email" />
-          <InputText name="password" type="password" placeholder="Password" />
+        <form @submit="onSubmit">
+          <InputText
+            name="email"
+            type="email"
+            placeholder="Email"
+            v-model="email"
+            v-bind="emailProps"
+          />
+          <InputText
+            name="password"
+            type="password"
+            placeholder="Password"
+            v-model="password"
+            v-bind="passwordProps"
+          />
           <Button type="submit">Sign in</Button>
+          <Message v-if="isErrorShown" variant="simple" size="small"
+            >E-mail or password are incorrect. Please try again.
+          </Message>
         </form>
       </template>
 
@@ -21,7 +72,7 @@ import { RouterLink } from 'vue-router'
         <div class="footer">
           <div class="row">
             <div>Forgot password?</div>
-            <Button variant="link">Reset</Button>
+            <Button variant="link" @click="handleReset">Reset</Button>
           </div>
           <div class="row">
             <div>No account?</div>
@@ -68,6 +119,11 @@ form {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.message-footer {
+  height: 24px;
+  vertical-align: center;
 }
 
 input {
