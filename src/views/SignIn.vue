@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { InputText, Button } from 'primevue'
+import Card from 'primevue/card';
 import { RouterLink } from 'vue-router'
 </script>
 
@@ -8,22 +9,28 @@ import { RouterLink } from 'vue-router'
     <Card>
       <template #title>Sign in</template>
       <template #subtitle>Sign in with your email address.</template>
-      <form>
-        <InputText name="email" type="email" placeholder="Email" />
-        <InputText name="password" type="password" placeholder="Password" />
-        <Button type="submit">Sign in</Button>
-      </form>
+      <template #content>
+        <form>
+          <InputText name="email" type="email" placeholder="Email" />
+          <InputText name="password" type="password" placeholder="Password" />
+          <Button type="submit">Sign in</Button>
+        </form>
+      </template>
 
-      <div class="footer">
-        <div class="row">
-          <span>Forgot password?</span>
-          <Button variant="link">Reset</Button>
+      <template #footer>
+        <div class="footer">
+          <div class="row">
+            <div>Forgot password?</div>
+            <Button variant="link">Reset</Button>
+          </div>
+          <div class="row">
+            <div>No account?</div>
+            <Button variant="link">
+              <RouterLink to="/sign-up">Sign up</RouterLink>
+            </Button>
+          </div>
         </div>
-        <div class="row">
-          <span>No account?</span>
-          <RouterLink to="/sign-up">Sign up</RouterLink>
-        </div>
-      </div>
+      </template>
     </Card>
   </div>
 </template>
@@ -39,12 +46,15 @@ import { RouterLink } from 'vue-router'
 .row {
   display: flex;
   flex-direction: row;
-  gap: 4px;
-  align-items: end;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 form {
-  display: contents;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: stretch;
 }
 
 .overlay {
@@ -60,12 +70,7 @@ form {
   justify-content: center;
 }
 
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: start;
-  background-color: white;
-  border-radius: 16px;
+input {
+  min-width: 300px;
 }
 </style>

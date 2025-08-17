@@ -27,7 +27,7 @@ router.beforeEach((to) => {
 
   if (isUserLoggedIn) {
     return true
-  } else if (to.path !== '/sign-in') {
+  } else if (to.path !== '/sign-in' && to.path !== '/sign-up') {
     return {
       path: '/sign-in',
     }
