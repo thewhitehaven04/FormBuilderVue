@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import { changePassword } from '@/services/auth.ts'
 import { Message, InputText, Card, Button } from 'primevue'
+import { CircleX } from 'lucide-vue-next'
 
 const schema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters long'),
@@ -25,7 +26,9 @@ const onSubmit = handleSubmit((data) => {
 
 <template>
   <Card class="card">
-    <template #title> Change password </template>
+    <template #title>
+      <div class="title">Change password</div>
+    </template>
     <template #content>
       <div class="content">
         <form @submit="onSubmit" @reset="handleReset()">
@@ -48,7 +51,10 @@ const onSubmit = handleSubmit((data) => {
           </div>
           <div class="controls">
             <Button type="submit">Change password</Button>
-            <Button type="reset">Reset</Button>
+            <Button type="reset">
+              <CircleX />
+              Reset
+            </Button>
           </div>
         </form>
       </div>
@@ -82,9 +88,13 @@ form {
 }
 
 .content {
-  @media screen and (min-width: 1080px) {
-    width: 500px;
-  }
+  max-width: 600px;
+  width: 100%;
+  min-width: 350px;
+}
+
+.title {
+  height: 40px;
 }
 
 .input-row {

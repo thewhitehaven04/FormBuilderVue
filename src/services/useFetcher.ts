@@ -9,7 +9,7 @@ export function useFetcher<T>(func: () => Promise<T>) {
   const query = async () => {
     try {
       isFetching.value = true
-      return await func()
+      data.value = await func()
     } catch (error) {
       hasError.value = true
     } finally {

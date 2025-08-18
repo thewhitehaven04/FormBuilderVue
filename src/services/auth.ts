@@ -62,7 +62,5 @@ supabase.auth.onAuthStateChange(async (event, session) => {
     })
   } else if (event === 'SIGNED_OUT') {
     user.logout()
-  } else if (event === 'TOKEN_REFRESHED') {
-    user.setToken(session?.access_token)
   }
 })

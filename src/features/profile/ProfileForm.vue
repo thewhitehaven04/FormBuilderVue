@@ -3,10 +3,19 @@ import { Card, Button, InputText, IconField, InputIcon } from 'primevue'
 import { z } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
-import { CheckCircle2, LoaderCircle, Pencil, CircleX } from 'lucide-vue-next'
+import {
+  CheckCircle2,
+  LoaderCircle,
+  Pencil,
+  CircleX,
+  AtSign,
+  ClipboardList,
+  Timer,
+} from 'lucide-vue-next'
 import { ref, watch } from 'vue'
 import { fetchUserData } from '@/services/auth.ts'
 import { useFetcher } from '@/services/useFetcher.ts'
+import { format } from 'date-fns'
 import type { User } from '@supabase/supabase-js'
 
 const schema = z.object({
@@ -27,24 +36,28 @@ const { defineField, handleSubmit, handleReset } = useForm<TChangeMetadataDto>({
   validationSchema,
 })
 
-const { query, data, isPending, isFetching, hasError } = useFetcher<User>(
-  async () => (await fetchUserData()).data.user,
-)
+const { query, data, isPending, isFetching, hasError } = useFetcher<User | null>(async () => {
+  return (await fetchUserData()).data.user
+})
 
 const onSubmit = handleSubmit((data) => {
   toggleIsEditing()
 })
+
+const onReset = () => {
+  handleReset()
+  toggleIsEditing()
+}
 
 query()
 
 const [name, nameProps] = defineField('name')
 const [lastName, lastNameProps] = defineField('lastName')
 
-watch(data, (prev, curr) => {
-  if (curr) {
-    console.log(curr)
-    name.value = curr.user_metadata.firstName
-    lastName.value = curr.user_metadata.lastName
+watch(data, (data) => {
+  if (data) {
+    name.value = data.user_metadata.firstName
+    lastName.value = data.user_metadata.lastName
   }
 })
 </script>
@@ -55,16 +68,18 @@ watch(data, (prev, curr) => {
       <div class="title">
         Profile
         <div class="form-top-row">
-          <Button v-if="isEditing" form="profile" type="submit" variant="text">
+          <Button v-if="isEditing" form="profile" type="submit" variant="text" size="small">
             <CheckCircle2 />
           </Button>
-          <Pencil v-else @click="toggleIsEditing" />
+          <Button v-else variant="text" @click="toggleIsEditing" size="small">
+            <Pencil />
+          </Button>
         </div>
       </div>
     </template>
     <template #content>
       <div v-if="!isPending" class="form-content">
-        <form id="profile" @submit="onSubmit">
+        <form id="profile" @submit="onSubmit" @reset="onReset">
           <IconField>
             <InputIcon class="pi pi-user" />
             <InputText
@@ -88,9 +103,24 @@ watch(data, (prev, curr) => {
             />
           </IconField>
         </form>
-        <Button type="reset">
+        <div class="read-only-row">
+          <AtSign />
+          <div>{{ data?.email }}</div>
+        </div>
+        <div class="read-only-row">
+          <ClipboardList />
+          <div>Forms created: 1</div>
+        </div>
+        <div class="read-only-row">
+          <ClipboardList />
+          <div>
+            Registration date:
+            {{ data?.created_at ? format(data?.created_at, 'dd.mm.yyyy, HH:MM:SS') : null }}
+          </div>
+        </div>
+        <Button :disabled="!isEditing" form="profile" type="reset">
           <CircleX />
-          Reset changes
+          Reset
         </Button>
       </div>
       <LoaderCircle v-else />
@@ -109,11 +139,20 @@ form {
   justify-content: center;
 }
 
+.read-only-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
 .form-content {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  width: 600px;
+  max-width: 600px;
+  width: 100%;
+  min-width: 350px;
   gap: 16px;
 }
 
@@ -121,12 +160,14 @@ form {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  height: 40px;
 }
 
 .title {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 
 button,
