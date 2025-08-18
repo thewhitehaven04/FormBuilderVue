@@ -11,13 +11,13 @@ const lastSegment = computed(() => path.split('/')[-1])
   <header class="header">
     <h1 class="title">Form Builder</h1>
 
-    <div>
+    <div class="link-row">
       <RouterLink to="/home" style="{ 'link-active': lastSegment === '/home' }">Main</RouterLink>
       <RouterLink to="/new-form" style="{ 'link-active': lastSegment === '/new-form' }"
         >New form</RouterLink
       >
       <RouterLink to="/profile" style="{ 'link-active': lastSegment === '/profile' }"
-        >Main</RouterLink
+        >Profile</RouterLink
       >
       <Button>
         <LogOut />
@@ -38,6 +38,13 @@ const lastSegment = computed(() => path.split('/')[-1])
   justify-content: space-between;
   padding-inline: 32px;
   padding-block: 16px;
+}
+
+.link-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
 }
 
 .title {

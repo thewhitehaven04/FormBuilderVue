@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import './globals.css'
+</script>
 
 <template>
   <router-view/>

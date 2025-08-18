@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 type TUserData = {
   userId: string | null
@@ -9,43 +9,28 @@ type TUserData = {
 }
 
 export const useUserStore = defineStore('user', () => {
-  const data: TUserData = {
+  const data = ref({
     userId: null,
     name: null,
     lastName: null,
     email: null,
-  }
-  let accessToken: string | null = null
-
-  const isLoggedIn = computed(() => data.userId !== null)
-
-  const setToken = (token: string) => {
-    accessToken = token
-  }
+  })
+  const isLoggedIn = computed(() => data.value.userId !== null)
 
   const setUser = (user: TUserData) => {
-    data = user
+    data.value = user
   }
-  const resetUser = () => {
-    data.userId = null
-    data.email = null
-    data.lastName = null
-    data.name = null
-  }
-
   const logout = () => {
-    data.userId = null
-    data.email = null
-    data.name = null
-    data.lastName = null
+    data.value.userId = null
+    data.value.email = null
+    data.value.lastName = null
+    data.value.name = null
   }
 
   return {
     data,
     isLoggedIn,
     logout,
-    setToken,
     setUser,
-    resetUser,
   }
 })

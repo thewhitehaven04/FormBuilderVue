@@ -50,7 +50,7 @@ const onSubmit = handleSubmit(async (data) => {
 
 <template>
   <div class="overlay">
-    <Card>
+    <Card class="card">
       <template #title>Register</template>
       <template #subtitle>Sign up with your email address.</template>
       <template #content>
@@ -146,10 +146,11 @@ const onSubmit = handleSubmit(async (data) => {
           <Message
             v-if="isSuccessMessageShown && submitCount > 0"
             severity="success"
-            variant="success"
+            variant="simple"
             size="small"
           >
-            The sign-up is successful. Transfering you to login page...
+            The sign-up is successful. Check your e-mail to confirm the registration. Transferring
+            you to sign-in page...
           </Message>
         </form>
       </template>
@@ -192,7 +193,15 @@ form {
 }
 
 input {
-  min-width: 300px;
+  width: 100%;
+}
+
+.card {
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: var(--p-xl);
 }
 
 .input-container {
@@ -200,6 +209,7 @@ input {
   flex-direction: column;
   gap: 8px;
   height: 48px;
+  width: 100%;
 }
 
 .section {

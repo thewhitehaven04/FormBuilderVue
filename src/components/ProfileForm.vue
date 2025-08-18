@@ -3,7 +3,7 @@ import { Card, IconField, Button } from 'primevue'
 import { z } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
-import { CheckCircle2 } from 'lucide-vue-next'
+import { CheckCircle2, LoaderCircle } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { fetchUserData } from '@/services/auth.ts'
 import { useFetcher } from '@/services/useFetcher.ts'
@@ -42,7 +42,7 @@ query()
       </div>
     </template>
     <template #content>
-      <div class="form-content">
+      <div v-if="!isPending" class="form-content">
         <form id="profile">
           <IconField v-if="isEditing" type="text" name="name" v-model="name" v-bind="nameProps" />
           <span v-else>{{ name }}</span>
@@ -57,6 +57,7 @@ query()
         </form>
         <Button type="reset"></Button>
       </div>
+      <LoaderCircle v-else />
     </template>
   </Card>
 </template>

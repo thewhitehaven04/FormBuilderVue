@@ -8,22 +8,23 @@ import { toTypedSchema } from '@vee-validate/zod'
 import { signIn } from '@/services/auth.ts'
 import router from '@/router'
 import { ref } from 'vue'
+import ResetPasswordForm from '@/components/ResetPasswordForm.vue'
 
 const schema = z.object({
   email: z.string().email('Email field must not be empty'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
 })
-
 const validationSchema = toTypedSchema(schema)
-
 type TSignInSchema = z.infer<typeof schema>
 
-const { handleSubmit, handleReset, defineField } = useForm<TSignInSchema>({
+const { handleSubmit, defineField } = useForm<TSignInSchema>({
   validationSchema,
 })
 
 const [email, emailProps] = defineField('email')
 const [password, passwordProps] = defineField('password')
+
+const isResetModalShown = ref(false)
 const isErrorShown = ref(false)
 
 const onSubmit = handleSubmit(async (data) => {
@@ -38,11 +39,15 @@ const onSubmit = handleSubmit(async (data) => {
     isErrorShown.value = true
   }
 })
+
+const handleReset = () => {
+  isResetModalShown.value = true
+}
 </script>
 
 <template>
   <div class="overlay">
-    <Card>
+    <Card class="card">
       <template #title>Sign in</template>
       <template #subtitle>Sign in with your email address.</template>
       <template #content>
@@ -62,7 +67,7 @@ const onSubmit = handleSubmit(async (data) => {
             v-bind="passwordProps"
           />
           <Button type="submit">Sign in</Button>
-          <Message v-if="isErrorShown" variant="simple" size="small"
+          <Message v-if="isErrorShown" variant="simple" severity="error" size="small"
             >E-mail or password are incorrect. Please try again.
           </Message>
         </form>
@@ -72,17 +77,18 @@ const onSubmit = handleSubmit(async (data) => {
         <div class="footer">
           <div class="row">
             <div>Forgot password?</div>
-            <Button variant="link" @click="handleReset">Reset</Button>
+            <Button type="button" variant="link" @click="handleReset">Reset</Button>
           </div>
           <div class="row">
             <div>No account?</div>
-            <Button variant="link">
-              <RouterLink to="/sign-up">Sign up</RouterLink>
-            </Button>
+            <RouterLink to="/sign-up">
+              <Button variant="link">Sign up</Button>
+            </RouterLink>
           </div>
         </div>
       </template>
     </Card>
+    <ResetPasswordForm v-if="isResetModalShown" />
   </div>
 </template>
 
@@ -124,6 +130,13 @@ form {
 .message-footer {
   height: 24px;
   vertical-align: center;
+}
+
+.card {
+  min-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 input {

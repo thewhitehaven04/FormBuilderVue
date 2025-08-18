@@ -1,5 +1,6 @@
 import { supabase } from '@/services/supabase.ts'
 import { useUserStore } from '@/stores/user.ts'
+import type { TChangePasswordFormDto } from '@/components/ChangePasswordForm.vue'
 
 export type TSignupRequestDto = {
   email: string
@@ -27,26 +28,37 @@ export const signUp = async (request: TSignupRequestDto) => {
 }
 
 export const signIn = async (request: TSigninRequestDto) => {
-  return await supabase.auth.signInWithPassword({
+  const data = await supabase.auth.signInWithPassword({
     email: request.email,
     password: request.password,
   })
+  return data
+}
+
+export const resetPassword = async (request: { email: string }) => {
+  return await supabase.auth.resetPasswordForEmail(request.email)
+}
+
+export const changePassword = async (request: TChangePasswordFormDto) => {
+  return await supabase.auth.updateUser({ password: request.password })
+}
+
+export const fetchUserData = async () => {
+  return await supabase.auth.getUser()
 }
 
 supabase.auth.onAuthStateChange(async (event, session) => {
   const user = useUserStore()
-  if (event === 'SIGNED_IN') {
-    user.setToken({
+  if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+    user.setUser({
       userId: session?.user.id ?? null,
       name: session?.user.user_metadata.name ?? null,
       lastName: session?.user.user_metadata.lastName ?? null,
-      email: session?.user.email ?? null
+      email: session?.user.email ?? null,
     })
-  }
-  if (event === 'SIGNED_OUT') {
-    user.resetUser()
-  }
-  if (event === 'TOKEN_REFRESHED') {
+  } else if (event === 'SIGNED_OUT') {
+    user.logout()
+  } else if (event === 'TOKEN_REFRESHED') {
     user.setToken(session?.access_token)
   }
 })
