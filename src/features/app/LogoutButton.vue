@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { logout } from '@/services/auth.ts'
 import { LucideLogOut } from 'lucide-vue-next'
+import { Button } from 'primevue'
 
 const handleLogout = () => {
   logout()
@@ -8,7 +9,7 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <Button @click="handleLogout">
+  <Button @click="handleLogout" variant="text">
     <LucideLogOut />
   </Button>
 </template>

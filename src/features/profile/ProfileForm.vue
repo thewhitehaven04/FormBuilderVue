@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { Card, Button, IconField } from 'primevue'
+import { Card, Button, InputText, IconField, InputIcon } from 'primevue'
 import { z } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
-import { CheckCircle2, LoaderCircle, Pencil } from 'lucide-vue-next'
+import { CheckCircle2, LoaderCircle, Pencil, CircleX } from 'lucide-vue-next'
 import { ref, watch } from 'vue'
 import { fetchUserData } from '@/services/auth.ts'
 import { useFetcher } from '@/services/useFetcher.ts'
 import type { User } from '@supabase/supabase-js'
-import { UserRound } from 'lucide-vue-next'
 
 const schema = z.object({
   name: z.string().min(1),
@@ -43,6 +42,7 @@ const [lastName, lastNameProps] = defineField('lastName')
 
 watch(data, (prev, curr) => {
   if (curr) {
+    console.log(curr)
     name.value = curr.user_metadata.firstName
     lastName.value = curr.user_metadata.lastName
   }
@@ -52,39 +52,46 @@ watch(data, (prev, curr) => {
 <template>
   <Card class="card">
     <template #title>
-      <div class="form-top-row">
-        <Button v-if="isEditing" form="profile" type="submit" variant="text">
-          <CheckCircle2 />
-        </Button>
-        <Pencil v-else @click="toggleIsEditing" />
+      <div class="title">
+        Profile
+        <div class="form-top-row">
+          <Button v-if="isEditing" form="profile" type="submit" variant="text">
+            <CheckCircle2 />
+          </Button>
+          <Pencil v-else @click="toggleIsEditing" />
+        </div>
       </div>
     </template>
     <template #content>
       <div v-if="!isPending" class="form-content">
         <form id="profile" @submit="onSubmit">
           <IconField>
+            <InputIcon class="pi pi-user" />
             <InputText
               type="text"
               name="name"
+              placeholder="Name"
               v-model="name"
               v-bind="nameProps"
-              :disabled="isEditing"
+              :disabled="!isEditing"
             />
-            <UserRound />
           </IconField>
-
           <IconField>
+            <InputIcon class="pi pi-user" />
             <InputText
               type="text"
               name="lastName"
+              placeholder="Last name"
               v-model="lastName"
               v-bind="lastNameProps"
-              :disabled="isEditing"
+              :disabled="!isEditing"
             />
-            <UserRound />
           </IconField>
         </form>
-        <Button type="reset"></Button>
+        <Button type="reset">
+          <CircleX />
+          Reset changes
+        </Button>
       </div>
       <LoaderCircle v-else />
     </template>
@@ -97,7 +104,6 @@ form {
 }
 
 .card {
-  max-width: 600px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -107,6 +113,8 @@ form {
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  width: 600px;
+  gap: 16px;
 }
 
 .form-top-row {
@@ -115,8 +123,14 @@ form {
   justify-content: flex-end;
 }
 
-input,
-button {
+.title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+button,
+input {
   width: 100%;
 }
 </style>
