@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { LogOut } from 'lucide-vue-next'
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+
+const { path } = useRoute()
+const lastSegment = computed(() => path.split('/')[-1])
 </script>
 
 <template>
@@ -7,10 +12,13 @@ import { LogOut } from 'lucide-vue-next'
     <h1 class="title">Form Builder</h1>
 
     <div>
-      <RouterLink to="/home">Main</RouterLink>
-      <RouterLink to="/new-form">New form</RouterLink>
-      <RouterLink to="/profile">Main</RouterLink>
-
+      <RouterLink to="/home" style="{ 'link-active': lastSegment === '/home' }">Main</RouterLink>
+      <RouterLink to="/new-form" style="{ 'link-active': lastSegment === '/new-form' }"
+        >New form</RouterLink
+      >
+      <RouterLink to="/profile" style="{ 'link-active': lastSegment === '/profile' }"
+        >Main</RouterLink
+      >
       <Button>
         <LogOut />
       </Button>
@@ -35,5 +43,9 @@ import { LogOut } from 'lucide-vue-next'
 .title {
   font-size: 36px;
   font-weight: bold;
+}
+
+.link-active {
+  color: aquamarine;
 }
 </style>
