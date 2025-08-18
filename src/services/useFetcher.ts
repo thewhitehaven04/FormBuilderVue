@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 
 export function useFetcher<T>(func: () => Promise<T>) {
-  const data = ref<T | null>(data)
+  const data = ref<T | null>(null)
   const hasError = ref(false)
   const isPending = ref(true)
   const isFetching = ref(false)

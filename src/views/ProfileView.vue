@@ -1,11 +1,11 @@
 <script setup lang="ts">
-
-import ChangePasswordForm from '@/components/ChangePasswordForm.vue'
+import ProfileForm from '@/features/profile/ProfileForm.vue'
+import ChangePasswordForm from '@/features/profile/ChangePasswordForm.vue'
 </script>
 
 <template>
   <div class="two-column">
-
+    <ProfileForm />
     <ChangePasswordForm />
   </div>
 </template>
@@ -16,5 +16,6 @@ import ChangePasswordForm from '@/components/ChangePasswordForm.vue'
   flex-direction: row;
   justify-content: flex-start;
   align-items: start;
+  gap: 36px;
 }
 </style>

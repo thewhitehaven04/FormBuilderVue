@@ -2,6 +2,7 @@
 import { LogOut } from 'lucide-vue-next'
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
+import LogoutButton from '@/features/app/LogoutButton.vue'
 
 const { path } = useRoute()
 const lastSegment = computed(() => path.split('/')[-1])
@@ -10,18 +11,15 @@ const lastSegment = computed(() => path.split('/')[-1])
 <template>
   <header class="header">
     <h1 class="title">Form Builder</h1>
-
     <div class="link-row">
       <RouterLink to="/home" style="{ 'link-active': lastSegment === '/home' }">Main</RouterLink>
       <RouterLink to="/new-form" style="{ 'link-active': lastSegment === '/new-form' }"
-        >New form</RouterLink
-      >
+        >New form
+      </RouterLink>
       <RouterLink to="/profile" style="{ 'link-active': lastSegment === '/profile' }"
-        >Profile</RouterLink
-      >
-      <Button>
-        <LogOut />
-      </Button>
+        >Profile
+      </RouterLink>
+      <LogoutButton />
     </div>
   </header>
 </template>
@@ -36,8 +34,13 @@ const lastSegment = computed(() => path.split('/')[-1])
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding-inline: 32px;
-  padding-block: 16px;
+  padding-inline: var(--p-xl);
+  padding-block: var(--p-lg);
+}
+
+h1 {
+  margin: 0;
+  padding: 0;
 }
 
 .link-row {

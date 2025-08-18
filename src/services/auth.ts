@@ -1,6 +1,6 @@
 import { supabase } from '@/services/supabase.ts'
 import { useUserStore } from '@/stores/user.ts'
-import type { TChangePasswordFormDto } from '@/components/ChangePasswordForm.vue'
+import type { TChangePasswordFormDto } from '@/features/profile/ChangePasswordForm.vue'
 
 export type TSignupRequestDto = {
   email: string
@@ -45,6 +45,10 @@ export const changePassword = async (request: TChangePasswordFormDto) => {
 
 export const fetchUserData = async () => {
   return await supabase.auth.getUser()
+}
+
+export const logout = async () => {
+  return await supabase.auth.signOut()
 }
 
 supabase.auth.onAuthStateChange(async (event, session) => {

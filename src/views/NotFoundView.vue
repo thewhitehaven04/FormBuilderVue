@@ -4,15 +4,18 @@ import { ShieldQuestionMark } from 'lucide-vue-next'
 
 <template>
   <div class="container">
-    <h1>404</h1>
-    <ShieldQuestionMark />
+    <ShieldQuestionMark size="48" />
+    <h1>This page does not exist</h1>
   </div>
 </template>
 
 <style scoped>
 .container {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  height: 100vh;
+  width: 100vw;
 }
 </style>

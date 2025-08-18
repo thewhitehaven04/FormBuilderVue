@@ -8,7 +8,7 @@ import { toTypedSchema } from '@vee-validate/zod'
 import { signIn } from '@/services/auth.ts'
 import router from '@/router'
 import { ref } from 'vue'
-import ResetPasswordForm from '@/components/ResetPasswordForm.vue'
+import ResetPasswordForm from '@/features/app/ResetPasswordForm.vue'
 
 const schema = z.object({
   email: z.string().email('Email field must not be empty'),
