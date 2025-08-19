@@ -15,17 +15,14 @@ export const useUserStore = defineStore('user', () => {
     const storageDataString = localStorage.getItem(LS_KEY) ?? null
     let userStorageData: User | null = null
     if (storageDataString) {
-        userStorageData = JSON.parse(storageDataString)
+        userStorageData = JSON.parse(storageDataString).user
     }
 
     const data = ref({
-        userId: userStorageData?.user?.id ?? null,
-        name:
-            userStorageData?.user?.identities[0].identity_data.firstName ??
-            null,
-        lastName:
-            userStorageData?.user?.identities[0].identity_data.lastName ?? null,
-        email: userStorageData?.user?.email ?? null,
+        userId: userStorageData?.id ?? null,
+        name: userStorageData?.user_metadata.firstName ?? null,
+        lastName: userStorageData?.user_metadata.lastName ?? null,
+        email: userStorageData?.email ?? null,
     })
 
     const isLoggedIn = computed(() => data.value.userId !== null)

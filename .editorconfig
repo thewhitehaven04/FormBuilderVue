@@ -6,3 +6,7 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 end_of_line = lf
 max_line_length = 100
+ij_typescript_force_semicolon_style = false
+ij_vue_tab_width = 4
+ij_vue_spaces_within_interpolation_expressions = true
+ij_vue_indent_size = 4

@@ -3,20 +3,11 @@ import { Card, Button, InputText, IconField, InputIcon } from 'primevue'
 import { z } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
-import {
-    CheckCircle2,
-    LoaderCircle,
-    Pencil,
-    CircleX,
-    AtSign,
-    ClipboardList,
-    Timer,
-} from 'lucide-vue-next'
 import { ref, watch } from 'vue'
 import { fetchUserData } from '@/services/auth.ts'
 import { useFetcher } from '@/services/useFetcher.ts'
-import { format } from 'date-fns'
 import type { User } from '@supabase/supabase-js'
+import { format } from 'date-fns'
 
 const schema = z.object({
     name: z.string().min(1),
@@ -40,7 +31,7 @@ const { query, data, isPending } = useFetcher<User | null>(async () => {
     return (await fetchUserData()).data.user
 })
 
-const onSubmit = handleSubmit((data) => {
+const onProfileUpdateSubmit = handleSubmit((data) => {
     toggleIsEditing()
 })
 
@@ -77,12 +68,7 @@ watch(data, (data) => {
                     >
                         <CheckCircle2 />
                     </Button>
-                    <Button
-                        v-else
-                        variant="text"
-                        @click="toggleIsEditing"
-                        size="small"
-                    >
+                    <Button v-else variant="text" @click="toggleIsEditing" size="small">
                         <Pencil />
                     </Button>
                 </div>
@@ -90,7 +76,7 @@ watch(data, (data) => {
         </template>
         <template #content>
             <div v-if="!isPending" class="form-content">
-                <form id="profile" @submit="onSubmit" @reset="onReset">
+                <form id="profile" @submit="onProfileUpdateSubmit" @reset="onReset">
                     <IconField>
                         <InputIcon class="pi pi-user" />
                         <InputText
@@ -126,8 +112,7 @@ watch(data, (data) => {
                     <ClipboardList />
                     <div>
                         Registration date:
-                        {{ data?.created_at ? format(data?.created_at, 'dd.mm.yyyy,
-            HH:MM:SS') : null }}
+                        {{ data?.created_at ? format(data?.created_at, 'dd.mm.yyyy, HH:MM:SS') : null }}
                     </div>
                 </div>
                 <Button :disabled="!isEditing" form="profile" type="reset">
