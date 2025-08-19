@@ -2,6 +2,7 @@
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
 import LogoutButton from '@/features/app/LogoutButton.vue'
+import ThemeSwitcher from '@/features/app/ThemeSwitcher.vue'
 
 const { path } = useRoute()
 const lastSegment = computed(() => path.split('/')[-1])
@@ -11,16 +12,15 @@ const lastSegment = computed(() => path.split('/')[-1])
     <header class="header">
         <h1 class="title">Form Builder</h1>
         <div class="link-row">
-            <RouterLink to="/"
-                style="{ 'link-active': lastSegment === '/home' }">Home
+            <RouterLink to="/" style="{ 'link-active': lastSegment === '/home' }">Home </RouterLink>
+            <RouterLink to="/new-form" style="{ 'link-active': lastSegment === '/new-form' }"
+                >New form
             </RouterLink>
-            <RouterLink to="/new-form"
-                style="{ 'link-active': lastSegment === '/new-form' }">New form
-            </RouterLink>
-            <RouterLink to="/profile"
-                style="{ 'link-active': lastSegment === '/profile' }">Profile
+            <RouterLink to="/profile" style="{ 'link-active': lastSegment === '/profile' }"
+                >Profile
             </RouterLink>
             <LogoutButton />
+            <ThemeSwitcher />
         </div>
     </header>
 </template>
@@ -37,6 +37,7 @@ const lastSegment = computed(() => path.split('/')[-1])
     justify-content: space-between;
     padding-inline: var(--p-xl);
     padding-block: var(--p-lg);
+    width: 100%;
 }
 
 h1 {
