@@ -4,18 +4,18 @@ import ChangePasswordForm from '@/features/profile/ChangePasswordForm.vue'
 </script>
 
 <template>
-  <div class="two-column">
-    <ProfileForm />
-    <ChangePasswordForm />
-  </div>
+    <div class="two-column">
+        <ProfileForm />
+        <ChangePasswordForm />
+    </div>
 </template>
 
 <style scoped>
 .two-column {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: start;
-  gap: 36px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: start;
+    gap: 36px;
 }
 </style>
