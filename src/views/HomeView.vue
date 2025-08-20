@@ -12,15 +12,19 @@ const goBack = () => {
 </script>
 
 <template>
-    <AppHeader />
     <div class="body-wrapper">
-        <div class="button-wrapper">
-            <Button variant="text" @click="goBack">
-                <CircleArrowLeftIcon />
-                Back
-            </Button>
-        </div>
-        <RouterView />
+        <AppHeader />
+        <main>
+            <div class="container">
+                <div class="button-wrapper">
+                    <Button variant="text" @click="goBack">
+                        <CircleArrowLeftIcon />
+                        Back
+                    </Button>
+                </div>
+                <RouterView />
+            </div>
+        </main>
     </div>
 </template>
 
@@ -31,11 +35,27 @@ const goBack = () => {
     flex-direction: column;
     align-items: center;
     min-width: 375px;
+    position: relative;
+    padding-bottom: 4px;
+    height: 100vh;
+    width: 100vw;
+}
+
+main {
+    width: 100%;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
     max-width: 1440px;
-    position: relative;
-    overflow-y: scroll;
-    padding-bottom: 4px;
+    padding-bottom: 2px;
 }
 
 .button-wrapper {
@@ -45,5 +65,6 @@ const goBack = () => {
     flex-direction: row;
     justify-content: flex-start;
     width: 100%;
+    margin-bottom: 8px;
 }
 </style>
