@@ -3,7 +3,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
-import PrimeVue from 'primevue/config'
+import PrimeVue, { type PrimeVueConfiguration } from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
 
 const app = createApp(App)
@@ -15,9 +15,13 @@ app.use(PrimeVue, {
     theme: {
         preset: Aura,
         options: {
-            darkModeSelector: `.${DARK_MODE_SELECTOR_CLASS}`
+            darkModeSelector: `.${DARK_MODE_SELECTOR_CLASS}`,
+            cssLayer: {
+                name: 'primevue',
+                order: 'app, primevue'
+            }
         }
     },
-})
+} satisfies PrimeVueConfiguration)
 
 app.mount('#app')

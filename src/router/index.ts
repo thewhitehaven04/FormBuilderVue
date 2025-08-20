@@ -5,7 +5,7 @@ import HomeView from '@/views/HomeView.vue'
 import { useUserStore } from '@/stores/user.ts'
 import ProfileView from '@/views/ProfileView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
-import NewForm from '@/views/NewForm.vue'
+import FormBuilder from '@/views/FormBuilder.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,7 +20,7 @@ const router = createRouter({
                 },
                 {
                     path: 'new-form',
-                    component: NewForm,
+                    component: FormBuilder,
                 },
             ],
         },

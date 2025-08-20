@@ -1,26 +1,27 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 import LogoutButton from '@/features/app/LogoutButton.vue'
 import ThemeSwitcher from '@/features/app/ThemeSwitcher.vue'
-
-const { path } = useRoute()
-const lastSegment = computed(() => path.split('/')[-1])
+import { Button } from 'primevue'
 </script>
 
 <template>
     <header class="header">
-        <h1 class="title">Form Builder</h1>
-        <div class="link-row">
-            <RouterLink to="/" style="{ 'link-active': lastSegment === '/home' }">Home </RouterLink>
-            <RouterLink to="/new-form" style="{ 'link-active': lastSegment === '/new-form' }"
-                >New form
-            </RouterLink>
-            <RouterLink to="/profile" style="{ 'link-active': lastSegment === '/profile' }"
-                >Profile
-            </RouterLink>
-            <LogoutButton />
-            <ThemeSwitcher />
+        <div class="header-content">
+            <h1 class="title">Form Builder</h1>
+            <div class="link-row">
+                <RouterLink to="/" exactActiveClass="link-active">
+                    <Button variant="text" size="small">Home</Button>
+                </RouterLink>
+                <RouterLink to="/new-form" exactActiveClass="link-active">
+                    <Button variant="text" size="small">New form</Button>
+                </RouterLink>
+                <RouterLink to="/profile" exactActiveClass="link-active">
+                    <Button variant="text" size="small">Profile</Button>
+                </RouterLink>
+                <LogoutButton />
+                <ThemeSwitcher />
+            </div>
         </div>
     </header>
 </template>
@@ -29,14 +30,21 @@ const lastSegment = computed(() => path.split('/')[-1])
 .header {
     position: sticky;
     top: 0;
-    box-shadow: 0px 1px 8px 1px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 2px 4px 0.6px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    padding-block: var(--p-md);
+    padding-inline: var(--p-lg);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
 
+.header-content {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding-inline: var(--p-xl);
-    padding-block: var(--p-lg);
+    max-width: 1440px;
     width: 100%;
 }
 
@@ -58,6 +66,6 @@ h1 {
 }
 
 .link-active {
-    color: aquamarine;
+    filter: brightness(0.6);
 }
 </style>
