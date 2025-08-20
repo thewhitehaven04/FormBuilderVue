@@ -34,6 +34,8 @@ const goBack = () => {
     width: 100%;
     max-width: 1440px;
     position: relative;
+    overflow-y: scroll;
+    padding-bottom: 4px;
 }
 
 .button-wrapper {

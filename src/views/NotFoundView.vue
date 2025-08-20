@@ -4,7 +4,7 @@ import { ShieldQuestionMark } from 'lucide-vue-next'
 
 <template>
     <div class="container">
-        <ShieldQuestionMark size="48" />
+        <ShieldQuestionMark />
         <h1>This page does not exist</h1>
     </div>
 </template>

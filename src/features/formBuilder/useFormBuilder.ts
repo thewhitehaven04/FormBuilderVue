@@ -55,7 +55,6 @@ export const getFormProvider = () => {
     }
 
     const updateQuestion = (updatedRecord: Partial<TEntry> & { id: string }) => {
-        console.log(updatedRecord)
         const i = questions.value.findIndex((entry) => entry.id === updatedRecord.id)
         questions.value[i] = { ...questions.value[i], ...updatedRecord }
     }
