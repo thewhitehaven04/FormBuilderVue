@@ -44,11 +44,18 @@ export const getFormProvider = () => {
         if (type === 'oneLine' || type === 'multiLine') {
             questions.value.push({ id: nanoid(), type, question: '', isRequired: true })
         } else if (type === 'singleChoice' || type === 'multipleChoice') {
-            questions.value.push({ id: nanoid(), type, question: '', isRequired: true, options: [] })
+            questions.value.push({
+                id: nanoid(),
+                type,
+                question: '',
+                isRequired: true,
+                options: [],
+            })
         }
     }
 
     const updateQuestion = (updatedRecord: Partial<TEntry> & { id: string }) => {
+        console.log(updatedRecord)
         const i = questions.value.findIndex((entry) => entry.id === updatedRecord.id)
         questions.value[i] = { ...questions.value[i], ...updatedRecord }
     }
@@ -59,7 +66,15 @@ export const getFormProvider = () => {
 
     const copyQuestion = (entryId: string) => {
         const i = questions.value.findIndex((entry) => entry.id === entryId)
-        questions.value.splice(i, 1)
+        questions.value = [
+            ...questions.value.slice(0, i),
+            { ...questions.value[i], id: nanoid() },
+            ...questions.value.slice(i),
+        ]
+    }
+
+    const removeQuestion = (entryId: string) => {
+        questions.value = questions.value.filter((entry) => entry.id !== entryId)
     }
 
     return {
@@ -69,6 +84,7 @@ export const getFormProvider = () => {
         addQuestion,
         updateQuestion,
         copyQuestion,
+        removeQuestion,
         onFormSave,
     }
 }
@@ -82,4 +98,3 @@ export const useFormBuilder = () => {
 
     return provided
 }
-

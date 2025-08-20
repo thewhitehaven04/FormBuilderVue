@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Card, Textarea, Checkbox, Divider, RadioButton, InputText } from 'primevue'
-import type { IOneLineEntryRequest } from '@/stores/formBuilder.ts'
+import { Textarea, Checkbox, RadioButton, InputText, Button } from 'primevue'
 import { useFieldArray } from 'vee-validate'
-import { CircleMinus, Copy } from 'lucide-vue-next'
+import { CircleMinus } from 'lucide-vue-next'
+import QuestionCreator from '@/features/formBuilder/questionCreators/QuestionCreator.vue'
+import type { IOneLineEntryRequest } from '@/features/formBuilder/useFormBuilder.ts'
 
-const initialValues = defineProps<{
+const props = defineProps<{
     type: 'singleChoice' | 'multipleChoice'
     question: string
     isRequired: boolean
@@ -12,42 +13,23 @@ const initialValues = defineProps<{
 
 defineEmits<{
     (e: 'choice-question-form-change', value: Partial<IOneLineEntryRequest>): void
-    (e: 'copy'): void
 }>()
 
-const options = useFieldArray<{ type: typeof initialValues.type; text: string }>('options')
+const options = useFieldArray<{ type: typeof props.type; text: string }>('options')
 </script>
 
 <template>
-    <Card>
-        <template #header>
-            <div class="title-row">
-                <span>{{
-                    initialValues.type === 'singleChoice'
-                        ? 'Single choice question'
-                        : 'Multiple choice question'
-                }}</span>
-                <div class="actions">
-                    <Checkbox
-                        name="isRequired"
-                        defaultvalue="{{initialValues.isRequired}}"
-                        @value-change="
-                            (value) => $emit('choice-question-form-change', { isRequired: value })
-                        "
-                    />
-                    <Button type="button" variant="text">
-                        <Copy />
-                    </Button>
-                </div>
-            </div>
-        </template>
-        <Divider layout="horizontal" />
-
+    <QuestionCreator
+        :title="
+            props.type === 'singleChoice' ? 'Single choice question' : 'Multiple choice question'
+        "
+        :is-required="props.isRequired"
+    >
         <template #content>
             <Textarea
                 name="question"
                 type="text"
-                default-value="{{initialValues.question}}"
+                :default-value="props.question"
                 @value-change="(value) => $emit('choice-question-form-change', { question: value })"
             />
             <ul>
@@ -67,11 +49,11 @@ const options = useFieldArray<{ type: typeof initialValues.type; text: string }>
             <Button
                 type="button"
                 variant="outlined"
-                @click="options.push({ type: initialValues.type, text: '' })"
+                @click="options.push({ type: props.type, text: '' })"
                 >Add answer option
             </Button>
         </template>
-    </Card>
+    </QuestionCreator>
 </template>
 
 <style scoped>

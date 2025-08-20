@@ -1,63 +1,40 @@
 <script setup lang="ts">
-import { Card, Textarea, Checkbox, Divider, Button } from 'primevue'
-import { Copy } from 'lucide-vue-next'
+import { Textarea } from 'primevue'
 import type { IOneLineEntryRequest } from '@/features/formBuilder/useFormBuilder.ts'
+import QuestionCreator from '@/features/formBuilder/questionCreators/QuestionCreator.vue'
 
-const initialValues = defineProps<{
+const props = defineProps<{
     type: 'oneLine' | 'multiLine'
-    question: string
     isRequired: boolean
+    question: string
 }>()
 
 defineEmits<{
     (e: 'text-answer-form-change', value: Partial<IOneLineEntryRequest>): void
-    (e: 'copy'): void
 }>()
 </script>
 
 <template>
-    <Card>
-        <template #header>
-            <div class="title-row">
-                <span>{{
-                    initialValues.type === 'oneLine' ? 'One-line question' : 'Multiline question'
-                }}</span>
-                <div class="actions">
-                    <Checkbox
-                        name="isRequired"
-                        defaultvalue="{{initialValues.isRequired}}"
-                        @value-change="
-                            (value) => $emit('text-answer-form-change', { isRequired: value })
-                        "
-                    />
-                    <Button type="button" variant="text">
-                        <Copy />
-                    </Button>
-                </div>
-            </div>
-        </template>
-        <Divider layout="horizontal" />
+    <QuestionCreator
+        :title="props.type === 'oneLine' ? 'One-line question' : 'Multiline question'"
+        :is-required="props.isRequired"
+    >
         <template #content>
             <Textarea
                 name="question"
                 type="text"
-                default-value="{{initialValues.question}}"
+                :default-value="props.question"
+                placeholder="Question"
                 @value-change="(value) => $emit('text-answer-form-change', { question: value })"
             />
         </template>
-    </Card>
+    </QuestionCreator>
 </template>
 
 <style scoped>
-.title-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
 
-.actions {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
+textarea {
+    width: 100%;
+    resize: vertical;
 }
 </style>

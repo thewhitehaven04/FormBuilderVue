@@ -90,11 +90,11 @@ const onSubmit = handleSubmit(async (data) => {
 
         <template #footer>
             <div class="footer">
-                <div class="row">
+                <div class="type-selector">
                     <div>Forgot password?</div>
                     <Button type="button" variant="link" @click="$emit('reset')">Reset</Button>
                 </div>
-                <div class="row">
+                <div class="type-selector">
                     <div>No account?</div>
                     <RouterLink to="/sign-up">
                         <Button variant="link">Sign up</Button>
@@ -124,7 +124,7 @@ form {
     width: 480px;
 }
 
-.row {
+.type-selector {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;

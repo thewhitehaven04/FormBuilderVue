@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Card, Tabs, TabList, Tab, TabPanels, TabPanel } from 'primevue'
 import ActionsForm from '@/features/formBuilder/ActionsForm.vue'
+
 </script>
 
 <template>
@@ -28,7 +29,11 @@ import ActionsForm from '@/features/formBuilder/ActionsForm.vue'
 
 <style scoped>
 .content {
-    width: 400px;
+    min-width: 270px;
+    min-height: 410px;
+    transition-property: height;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-in-out;
 }
 
 </style>

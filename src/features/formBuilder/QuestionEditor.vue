@@ -4,11 +4,11 @@ import ChoiceQuestionCreator from '@/features/formBuilder/questionCreators/Choic
 import { Card } from 'primevue'
 import { useFormBuilder } from '@/features/formBuilder/useFormBuilder.ts'
 
-const { questions, copyQuestion, updateQuestion } = useFormBuilder()
+const { questions, copyQuestion, updateQuestion, removeQuestion } = useFormBuilder()
 </script>
 
 <template>
-    <Card>
+    <Card class="outer-border">
         <template #content>
             <ul v-if="!!questions.length">
                 <li v-for="q in questions" :key="q.id">
@@ -19,6 +19,7 @@ const { questions, copyQuestion, updateQuestion } = useFormBuilder()
                         :question="q.question"
                         @text-answer-form-change="(value) => updateQuestion({ id: q.id, ...value })"
                         @copy="copyQuestion(q.id)"
+                        @remove="removeQuestion(q.id)"
                     />
                     <ChoiceQuestionCreator
                         v-else
@@ -29,18 +30,24 @@ const { questions, copyQuestion, updateQuestion } = useFormBuilder()
                             (value) => updateQuestion({ id: q.id, ...value })
                         "
                         @copy="copyQuestion(q.id)"
+                        @remove="removeQuestion(q.id)"
                     />
                 </li>
             </ul>
-            <div v-else>
-               No questions added
-            </div>
+            <div v-else>No questions added</div>
         </template>
     </Card>
 </template>
 
 <style scoped>
-.container {
-    width: 600px;
+.outer-border {
+    border-width: 4px;
+    border-style: dot-dash;
+}
+
+ul {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 </style>

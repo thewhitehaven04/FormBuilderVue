@@ -33,9 +33,12 @@ const goBack = () => {
     min-width: 375px;
     width: 100%;
     max-width: 1440px;
+    position: relative;
 }
 
 .button-wrapper {
+    position: sticky;
+    top: 0px;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;

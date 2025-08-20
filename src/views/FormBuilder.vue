@@ -10,9 +10,9 @@ provide('form-builder', providerValue)
 </script>
 
 <template>
-    <div class="row">
+    <div class="type-selector">
         <Sidebar v-once />
-        <div class="column">
+        <div class="editor">
             <FormEditor />
             <QuestionEditor />
         </div>
@@ -20,18 +20,19 @@ provide('form-builder', providerValue)
 </template>
 
 <style scoped>
-.column {
+.editor {
     display: flex;
     flex-direction: column;
     gap: 32px;
     align-items: stretch;
 }
 
-.row {
+.type-selector {
     display: flex;
     flex-direction: row;
     justify-content: start;
     align-items: start;
     gap: 32px;
+    width: 100%;
 }
 </style>

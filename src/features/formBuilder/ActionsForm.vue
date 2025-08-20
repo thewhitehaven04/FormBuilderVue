@@ -53,6 +53,7 @@ section {
 }
 
 h1 {
-    font-size: 20pt;
+    font-size: 18pt;
+    font-weight: 600;
 }
 </style>
