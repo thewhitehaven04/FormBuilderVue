@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterLink, useRoute } from 'vue-router'
+import { RouterLink } from 'vue-router'
 import LogoutButton from '@/features/app/LogoutButton.vue'
 import ThemeSwitcher from '@/features/app/ThemeSwitcher.vue'
 import { Button } from 'primevue'
@@ -60,6 +60,12 @@ h1 {
     flex-direction: row;
     align-items: center;
     gap: 8px;
+}
+
+.link-row > a {
+    @media screen and (max-width: 600px) {
+        display: none;
+    }
 }
 
 .title {

@@ -10,7 +10,7 @@ export function useFetcher<T>(func: () => Promise<T>) {
         try {
             isFetching.value = true
             data.value = await func()
-        } catch (error) {
+        } catch {
             hasError.value = true
         } finally {
             isPending.value = false

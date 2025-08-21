@@ -1,19 +1,25 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import SignIn from '@/views/SignIn.vue'
 import SignUp from '@/views/SignUp.vue'
-import HomeView from '@/views/HomeView.vue'
+import LayoutView from '@/views/LayoutView.vue'
 import { useUserStore } from '@/stores/user.ts'
 import ProfileView from '@/views/ProfileView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import FormBuilder from '@/views/FormBuilder.vue'
+import HomeView from '@/views/HomeView.vue'
+import FormEditor from '@/views/FormEditor.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
             path: '/',
-            component: HomeView,
+            component: LayoutView,
             children: [
+                {
+                    path: '',
+                    component: HomeView,
+                },
                 {
                     path: 'profile',
                     component: ProfileView,
@@ -22,6 +28,11 @@ const router = createRouter({
                     path: 'new-form',
                     component: FormBuilder,
                 },
+                {
+                    name: 'form-edit',
+                    path: 'form/:id',
+                    component: FormEditor
+                }
             ],
         },
         {

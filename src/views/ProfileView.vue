@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ProfileForm from '@/features/profile/ProfileForm.vue'
 import ChangePasswordForm from '@/features/profile/ChangePasswordForm.vue'
+import ProfileForm from '@/features/profile/ProfileForm.vue'
 </script>
 
 <template>
@@ -17,5 +17,6 @@ import ChangePasswordForm from '@/features/profile/ChangePasswordForm.vue'
     justify-content: flex-start;
     align-items: start;
     gap: 36px;
+    width: 100%;
 }
 </style>

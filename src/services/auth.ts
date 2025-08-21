@@ -14,7 +14,7 @@ export type TSigninRequestDto = {
     password: string
 }
 
-export const signUp = async (request: TSignupRequestDto) => {
+async function signUp(request: TSignupRequestDto) {
     return await supabase.auth.signUp({
         email: request.email,
         password: request.password,
@@ -27,7 +27,7 @@ export const signUp = async (request: TSignupRequestDto) => {
     })
 }
 
-export const signIn = async (request: TSigninRequestDto) => {
+async function signIn(request: TSigninRequestDto) {
     const data = await supabase.auth.signInWithPassword({
         email: request.email,
         password: request.password,
@@ -35,21 +35,23 @@ export const signIn = async (request: TSigninRequestDto) => {
     return data
 }
 
-export const resetPassword = async (request: { email: string }) => {
+async function resetPassword(request: { email: string }) {
     return await supabase.auth.resetPasswordForEmail(request.email)
 }
 
-export const changePassword = async (request: TChangePasswordFormDto) => {
+async function changePassword(request: TChangePasswordFormDto) {
     return await supabase.auth.updateUser({ password: request.password })
 }
 
-export const fetchUserData = async () => {
+async function fetchUserData() {
     return await supabase.auth.getUser()
 }
 
-export const logout = async () => {
+async function logout() {
     return await supabase.auth.signOut()
 }
+
+export { logout, fetchUserData, changePassword, resetPassword, signIn, signUp }
 
 supabase.auth.onAuthStateChange(async (event, session) => {
     const user = useUserStore()

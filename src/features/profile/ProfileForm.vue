@@ -8,6 +8,7 @@ import { fetchUserData } from '@/services/auth.ts'
 import { useFetcher } from '@/services/useFetcher.ts'
 import type { User } from '@supabase/supabase-js'
 import { format } from 'date-fns'
+import { CheckCircle2, Pencil } from 'lucide-vue-next'
 
 const schema = z.object({
     name: z.string().min(1),

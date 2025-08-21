@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Textarea } from 'primevue'
-import type { IOneLineEntryRequest } from '@/features/formBuilder/useFormBuilder.ts'
+import type { IOneLineQuestion } from '@/features/formBuilder/useFormBuilder.ts'
 import QuestionCreator from '@/features/formBuilder/questionCreators/QuestionCreator.vue'
 
 const props = defineProps<{
@@ -10,7 +10,7 @@ const props = defineProps<{
 }>()
 
 defineEmits<{
-    (e: 'text-answer-form-change', value: Partial<IOneLineEntryRequest>): void
+    (e: 'text-answer-form-change', value: Partial<IOneLineQuestion>): void
 }>()
 </script>
 

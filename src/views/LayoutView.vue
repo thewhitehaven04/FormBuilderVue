@@ -30,7 +30,6 @@ const goBack = () => {
 
 <style scoped>
 .body-wrapper {
-    margin-top: var(--m-lg);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -56,6 +55,7 @@ main {
     width: 100%;
     max-width: 1440px;
     padding-bottom: 2px;
+    padding-inline: var(--p-lg);
 }
 
 .button-wrapper {

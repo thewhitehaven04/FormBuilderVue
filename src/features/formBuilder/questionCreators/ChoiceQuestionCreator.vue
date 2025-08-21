@@ -4,8 +4,8 @@ import { useFieldArray, useForm } from 'vee-validate'
 import { CircleMinus } from 'lucide-vue-next'
 import QuestionCreator from '@/features/formBuilder/questionCreators/QuestionCreator.vue'
 import type {
-    IMultipleChoiceEntryRequest,
-    ISingleChoiceEntryRequest,
+    IMultipleChoiceQuestion,
+    ISingleChoiceQuestion,
 } from '@/features/formBuilder/useFormBuilder.ts'
 import { watch } from 'vue'
 
@@ -18,7 +18,7 @@ const props = defineProps<{
 const emit = defineEmits<{
     (
         e: 'choice-question-form-change',
-        value: Partial<ISingleChoiceEntryRequest | IMultipleChoiceEntryRequest>,
+        value: Partial<ISingleChoiceQuestion | IMultipleChoiceQuestion>,
     ): void
 }>()
 

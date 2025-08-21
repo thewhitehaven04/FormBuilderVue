@@ -1,5 +1,6 @@
 import { inject, ref } from 'vue'
 import { nanoid } from 'nanoid'
+import { saveForm } from '@/services/forms.ts'
 
 interface IBaseEntry {
     id: string
@@ -7,11 +8,11 @@ interface IBaseEntry {
     isRequired: boolean
 }
 
-export interface IOneLineEntryRequest extends IBaseEntry {
+export interface IOneLineQuestion extends IBaseEntry {
     type: 'oneLine'
 }
 
-export interface IMultiLineEntryRequest extends IBaseEntry {
+export interface IMultiLineQuestion extends IBaseEntry {
     type: 'multiLine'
 }
 
@@ -19,28 +20,40 @@ export interface IOption {
     text: string
 }
 
-export interface ISingleChoiceEntryRequest extends IBaseEntry {
+export interface ISingleChoiceQuestion extends IBaseEntry {
     type: 'singleChoice'
     options: IOption[]
 }
 
-export interface IMultipleChoiceEntryRequest extends IBaseEntry {
+export interface IMultipleChoiceQuestion extends IBaseEntry {
     type: 'multipleChoice'
     options: IOption[]
 }
 
-type TEntry =
-    | IOneLineEntryRequest
-    | IMultiLineEntryRequest
-    | IMultipleChoiceEntryRequest
-    | ISingleChoiceEntryRequest
+export type TQuestion =
+    | IOneLineQuestion
+    | IMultiLineQuestion
+    | IMultipleChoiceQuestion
+    | ISingleChoiceQuestion
 
-export const getFormProvider = () => {
-    const title = ref<string | null>(null)
-    const subtitle = ref<string | null>(null)
-    const questions = ref<TEntry[]>([])
+type TFormProviderDefaultValues = {
+    title: string | null
+    description: string | null
+    question: TQuestion[]
+}
 
-    const addQuestion = (type: TEntry['type']) => {
+export const getFormProvider = (
+    defaults: TFormProviderDefaultValues = {
+        title: null,
+        description: null,
+        question: [],
+    },
+) => {
+    const title = ref<string | null>(defaults.title)
+    const description = ref<string | null>(defaults.description)
+    const questions = ref<TQuestion[]>(defaults.question)
+
+    const addQuestion = (type: TQuestion['type']) => {
         if (type === 'oneLine' || type === 'multiLine') {
             questions.value.push({ id: nanoid(), type, question: '', isRequired: true })
         } else if (type === 'singleChoice' || type === 'multipleChoice') {
@@ -54,13 +67,28 @@ export const getFormProvider = () => {
         }
     }
 
-    const updateQuestion = (updatedRecord: Partial<TEntry> & { id: string }) => {
+    const updateQuestion = (updatedRecord: Partial<TQuestion> & { id: string }) => {
         const i = questions.value.findIndex((entry) => entry.id === updatedRecord.id)
         questions.value[i] = { ...questions.value[i], ...updatedRecord }
     }
 
-    const onFormSave = () => {
+    const onFormSave = (onError: () => void, onSuccess: () => void) => {
         questions.value = []
+        title.value = ''
+        description.value = ''
+
+        if (title.value && description.value) {
+            try {
+                saveForm({
+                    title: title.value,
+                    description: description.value,
+                    questions: questions.value,
+                })
+                onSuccess()
+            } catch {
+                onError()
+            }
+        }
     }
 
     const copyQuestion = (entryId: string) => {
@@ -78,7 +106,7 @@ export const getFormProvider = () => {
 
     return {
         title,
-        subtitle,
+        subtitle: description,
         questions,
         addQuestion,
         updateQuestion,

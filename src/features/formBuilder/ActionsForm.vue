@@ -1,8 +1,23 @@
 <script setup lang="ts">
-import { Button, Divider } from 'primevue'
+import { Button, Divider, useToast } from 'primevue'
 import { useFormBuilder } from '@/features/formBuilder/useFormBuilder.ts'
 
 const { addQuestion, onFormSave } = useFormBuilder()
+const toast = useToast()
+
+const onSaveSuccess = () => {
+    toast.add({
+        severity: 'success',
+        summary: 'The form has been successfully saved',
+    })
+}
+
+const onSaveError = () => {
+    toast.add({
+        severity: 'error',
+        summary: 'Unable to save the form. Try again later',
+    })
+}
 </script>
 
 <template>
@@ -34,7 +49,9 @@ const { addQuestion, onFormSave } = useFormBuilder()
     <Divider type="solid" />
     <section>
         <h1>Actions</h1>
-        <Button size="small" variant="outlined" @click="onFormSave()">Save form</Button>
+        <Button size="small" variant="outlined" @click="onFormSave(onSaveSuccess, onSaveError)"
+            >Save form</Button
+        >
     </section>
 </template>
 
