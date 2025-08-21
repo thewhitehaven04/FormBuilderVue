@@ -5,6 +5,7 @@ import App from './App.vue'
 import router from './router'
 import PrimeVue, { type PrimeVueConfiguration } from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
+import { ToastService } from 'primevue'
 
 const app = createApp(App)
 export const DARK_MODE_SELECTOR_CLASS = 'app-dark'
@@ -23,5 +24,6 @@ app.use(PrimeVue, {
         }
     },
 } satisfies PrimeVueConfiguration)
+app.use(ToastService)
 
 app.mount('#app')
