@@ -3,7 +3,7 @@ import { InputText, Textarea } from 'primevue'
 import { useFormBuilder } from '@/features/formBuilder/useFormBuilder.ts'
 import { Card } from 'primevue'
 
-const { title, subtitle } = useFormBuilder()
+const { title, description } = useFormBuilder()
 </script>
 
 <template>
@@ -12,7 +12,7 @@ const { title, subtitle } = useFormBuilder()
             <InputText placeholder="Title" v-model="title" />
         </template>
         <template #subtitle>
-            <Textarea placeholder="Description" v-model="subtitle"  />
+            <Textarea placeholder="Description" v-model="description"  />
         </template>
     </Card>
 </template>

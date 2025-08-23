@@ -10,7 +10,7 @@ const { questions, copyQuestion, updateQuestion, removeQuestion } = useFormBuild
 <template>
     <Card class="outer-border">
         <template #content>
-            <ul v-if="!!questions.length">
+            <ul v-if="questions.length > 0">
                 <li v-for="q in questions" :key="q.id">
                     <TextQuestionCreator
                         v-if="q.type === 'oneLine' || q.type === 'multiLine'"

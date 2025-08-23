@@ -1,6 +1,5 @@
 import type { TQuestion } from '@/features/formBuilder/useFormBuilder.ts'
 import { supabase } from '@/services/supabase.ts'
-import type { Database } from '../../types.ts'
 
 export interface IFormCreateRequest {
     title: string
@@ -9,7 +8,7 @@ export interface IFormCreateRequest {
 }
 
 // refactor this later to use Postgres functions, because supabase client API has no support for transactions
-async function saveForm(form: IFormCreateRequest) {
+async function createForm(form: IFormCreateRequest) {
     const { data: created } = await supabase
         .from('forms')
         .insert({
@@ -18,30 +17,36 @@ async function saveForm(form: IFormCreateRequest) {
         })
         .select('*')
         .single()
+        .throwOnError()
 
-    if (created) {
-        for (const question of form.questions) {
-            const { data: q } = await supabase
-                .from('questions')
-                .insert({
-                    form_id: created.id,
-                    is_required: question.isRequired,
-                    text: question.question,
-                })
-                .select('*')
-                .single()
+    for (const question of form.questions) {
+        console.log('iteration')
+        const { data: q } = await supabase
+            .from('questions')
+            .insert({
+                form_id: created.id,
+                is_required: question.isRequired,
+                text: question.question,
+            })
+            .select('*')
+            .single()
+            .throwOnError()
 
-
-            if (q && (question.type === 'singleChoice' || question.type === 'multipleChoice')) {
-                await supabase.from('options').insert(
+        if (question.type === 'singleChoice' || question.type === 'multipleChoice') {
+            await supabase
+                .from('options')
+                .insert(
                     question.options.map((opt) => ({
                         text: opt.text,
-                        question_id: q?.id,
+                        question_id: q.id,
                     })),
                 )
-            }
+                .throwOnError()
         }
-        supabase.from('questions').insert(
+    }
+    supabase
+        .from('questions')
+        .insert(
             form.questions
                 .filter((q) => q.type === 'oneLine' || q.type === 'multiLine')
                 .map((q) => ({
@@ -50,24 +55,32 @@ async function saveForm(form: IFormCreateRequest) {
                     form_id: created.id,
                 })),
         )
-    } else {
-        throw new Error('Unable to create the form')
-    }
+        .throwOnError()
 }
 
 async function fetchForms({
     skip,
     count,
     text,
-    description,
     isAscending,
 }: {
     skip: number
     count: number
     text?: string
-    description?: string
     isAscending: boolean
 }) {
+    if (!text) {
+        return (
+            await supabase
+                .from('forms')
+                .select('*, questions(*)')
+                .order('created_at', {
+                    ascending: isAscending,
+                })
+                .range(skip, skip + count)
+                .throwOnError()
+        ).data
+    }
     return (
         await supabase
             .from('forms')
@@ -75,6 +88,7 @@ async function fetchForms({
             .order('created_at', {
                 ascending: isAscending,
             })
+            .like('title', `*${text}*`)
             .range(skip, skip + count)
             .throwOnError()
     ).data
@@ -82,8 +96,17 @@ async function fetchForms({
 
 async function fetchForm(id: number) {
     return (
-        await supabase.from('forms').select('*, questions(*, options(*))').eq('id', id).single().throwOnError()
+        await supabase
+            .from('forms')
+            .select('*, questions(*, options(*))')
+            .eq('id', id)
+            .single()
+            .throwOnError()
     ).data
 }
 
-export { saveForm, fetchForms, fetchForm }
+async function deleteForm(id: number) {
+    await supabase.from('forms').delete().eq('id', id).throwOnError()
+}
+
+export { createForm, fetchForms, fetchForm, deleteForm }

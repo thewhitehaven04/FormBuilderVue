@@ -2,6 +2,9 @@
 import { Card, Tabs, TabList, Tab, TabPanels, TabPanel } from 'primevue'
 import ActionsForm from '@/features/formBuilder/ActionsForm.vue'
 
+const { type } = defineProps<{
+    type: 'create' | 'edit'
+}>()
 </script>
 
 <template>
@@ -15,7 +18,7 @@ import ActionsForm from '@/features/formBuilder/ActionsForm.vue'
                     </TabList>
                     <TabPanels>
                         <TabPanel value="builder">
-                            <ActionsForm />
+                            <ActionsForm :type="type" />
                         </TabPanel>
                         <TabPanel value="preferences">
                             <div>Hello world</div>

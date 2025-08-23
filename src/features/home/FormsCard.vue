@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Card,  InputText, Select } from 'primevue'
-import { onMounted, ref, watch } from 'vue'
+import { Card, InputText, Select } from 'primevue'
+import { ref, watch } from 'vue'
 import { Loader } from 'lucide-vue-next'
 import { useFetcher } from '@/services/useFetcher.ts'
-import { fetchForms } from '@/services/forms.ts'
+import { deleteForm, fetchForms } from '@/services/forms.ts'
 import FormPreview from '@/features/home/FormPreview.vue'
+import debounce from 'debounce'
 
 const options = [
     { label: 'Newest first', value: false },
@@ -18,19 +19,17 @@ const { data, query, isPending } = useFetcher(
         await fetchForms({
             skip: 0,
             count: 3,
-            description: searchQuery.value,
             text: searchQuery.value,
             isAscending: activeOptions.value,
         }),
 )
-watch([searchQuery, activeOptions], () => {
-    query()
-})
 
-onMounted(() => {
-    query()
-})
+watch([searchQuery, activeOptions], () => query())
 
+const handleRemove = (formId: number) => {
+    deleteForm(formId)
+    query()
+}
 </script>
 
 <template>
@@ -58,6 +57,7 @@ onMounted(() => {
                         :description="form.description"
                         :id="form.id"
                         :response-count="1"
+                        @remove="handleRemove(form.id)"
                     />
                 </div>
             </div>

@@ -11,7 +11,7 @@ provide('form-builder', providerValue)
 
 <template>
     <div class="type-selector">
-        <Sidebar v-once />
+        <Sidebar type="create" v-once />
         <div class="editor">
             <FormEditor />
             <QuestionEditor />

@@ -29,7 +29,6 @@ const router = createRouter({
                     component: FormBuilder,
                 },
                 {
-                    name: 'form-edit',
                     path: 'form/:id',
                     component: FormEditor
                 }

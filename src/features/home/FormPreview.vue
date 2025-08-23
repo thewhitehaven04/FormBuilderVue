@@ -11,7 +11,7 @@ const { id, title, description, responseCount } = defineProps<{
 }>()
 
 defineEmits<{
-    (e: 'remove', value: { id: number }): void
+    (e: 'remove'): void
 }>()
 </script>
 
@@ -35,7 +35,7 @@ defineEmits<{
                     </Button>
                 </RouterLink>
                 <Divider layout="vertical" />
-                <Button variant="text" size="small" @click="$emit('remove', { id })">
+                <Button variant="text" size="small" @click="$emit('remove')">
                     <Trash2 />
                 </Button>
             </div>

@@ -2,8 +2,12 @@
 import { Button, Divider, useToast } from 'primevue'
 import { useFormBuilder } from '@/features/formBuilder/useFormBuilder.ts'
 
-const { addQuestion, onFormSave } = useFormBuilder()
+const { addQuestion, onFormCreate, onFormEdit } = useFormBuilder()
 const toast = useToast()
+
+defineProps<{
+    type: 'create' | 'edit'
+}>()
 
 const onSaveSuccess = () => {
     toast.add({
@@ -49,9 +53,20 @@ const onSaveError = () => {
     <Divider type="solid" />
     <section>
         <h1>Actions</h1>
-        <Button size="small" variant="outlined" @click="onFormSave(onSaveSuccess, onSaveError)"
-            >Save form</Button
-        >
+        <Button
+            v-if="type === 'create'"
+            size="small"
+            variant="outlined"
+            @click="onFormCreate(onSaveError, onSaveSuccess)"
+            >Save form
+        </Button>
+        <Button
+            v-else
+            size="small"
+            variant="outlined"
+            @click="onFormEdit(onSaveError, onSaveSuccess)"
+            >Edit form
+        </Button>
     </section>
 </template>
 

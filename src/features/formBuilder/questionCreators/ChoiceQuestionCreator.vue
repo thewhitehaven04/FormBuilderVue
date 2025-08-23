@@ -33,7 +33,7 @@ const { defineField } = useForm({
     },
 })
 
-const { push, fields, remove } = useFieldArray<TOption>('options')
+const { push, fields, remove, update } = useFieldArray<TOption>('options')
 
 const [options] = defineField('options')
 
@@ -68,7 +68,7 @@ watch(
                     <li v-for="option in fields" class="option-row" :key="option.key">
                         <Checkbox v-if="option.value.type === 'singleChoice'" disabled />
                         <RadioButton v-else disabled />
-                        <InputText type="text" :value="option.value.text" />
+                        <InputText type="text" @valueChange="(val) => update(option.key, val)" />
                         <Button
                             type="button"
                             size="small"
