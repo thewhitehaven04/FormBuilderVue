@@ -1,6 +1,9 @@
 import { supabase } from '@/services/supabase.ts'
 import { useUserStore } from '@/stores/user.ts'
 import type { TChangePasswordFormDto } from '@/features/profile/ChangePasswordForm.vue'
+import type { User } from '@supabase/supabase-js'
+
+const LS_USER_KEY = 'sb-louvwylhdehsenaidave-auth-token' as const
 
 export type TSignupRequestDto = {
     email: string
@@ -21,16 +24,16 @@ async function signUp(request: TSignupRequestDto) {
         options: {
             data: {
                 firstName: request.firstName,
-                lastName: request.lastName,
-            },
-        },
+                lastName: request.lastName
+            }
+        }
     })
 }
 
 async function signIn(request: TSigninRequestDto) {
     const data = await supabase.auth.signInWithPassword({
         email: request.email,
-        password: request.password,
+        password: request.password
     })
     return data
 }
@@ -60,7 +63,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
             userId: session?.user.id ?? null,
             name: session?.user.user_metadata.name ?? null,
             lastName: session?.user.user_metadata.lastName ?? null,
-            email: session?.user.email ?? null,
+            email: session?.user.email ?? null
         })
     } else if (event === 'SIGNED_OUT') {
         user.logout()

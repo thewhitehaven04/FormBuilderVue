@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Card, InputText, Select } from 'primevue'
+import { Card, InputText, Select, IconField } from 'primevue'
 import { ref, watch } from 'vue'
 import { Loader } from 'lucide-vue-next'
 import { useFetcher } from '@/services/useFetcher.ts'
@@ -35,7 +35,10 @@ const handleRemove = (formId: number) => {
     <Card class="card">
         <template #title>
             <div class="title">
-                <InputText type="text" v-model="searchQuery" placeholder="Search" />
+                <IconField>
+                    <InputIcon icon="pi" />
+                    <InputText type="text" v-model="searchQuery" placeholder="Search" />
+                </IconField>
                 <Select
                     :options="options"
                     option-label="label"

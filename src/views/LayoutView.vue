@@ -65,6 +65,6 @@ main {
     flex-direction: row;
     justify-content: flex-start;
     width: 100%;
-    margin-bottom: 8px;
+    margin-block: 8px;
 }
 </style>

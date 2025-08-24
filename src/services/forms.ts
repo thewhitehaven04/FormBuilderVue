@@ -60,7 +60,12 @@ async function createForm(form: IFormCreateRequest) {
         .throwOnError()
 }
 
-async function editForm(formId: number, form: TFormEditRequest, optionsToDelete: number[], questionsToDelete: number[]) {
+async function editForm(
+    formId: number,
+    form: TFormEditRequest,
+    optionsToDelete: number[],
+    questionsToDelete: number[],
+) {
     supabase
         .from('forms')
         .update({
@@ -90,7 +95,7 @@ async function editForm(formId: number, form: TFormEditRequest, optionsToDelete:
                 .upsert(
                     question.options.map((opt) => ({
                         ...opt,
-                        question_id: question.id ?? 0
+                        question_id: question.id ?? 0,
                     })),
                 )
                 .throwOnError()
@@ -160,4 +165,8 @@ async function deleteQuestions(questionId: number[]) {
     supabase.from('questions').delete().in('id', questionId).throwOnError()
 }
 
-export { createForm, fetchForms, fetchForm, deleteForm, editForm, deleteOptions, deleteQuestions }
+async function getFormCount() {
+    return (await supabase.from('forms').select('*', { count: 'exact' })).count
+}
+
+export { createForm, fetchForms, fetchForm, deleteForm, editForm, deleteOptions, deleteQuestions, getFormCount }

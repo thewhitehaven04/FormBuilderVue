@@ -4,19 +4,26 @@ import ProfileForm from '@/features/profile/ProfileForm.vue'
 </script>
 
 <template>
-    <div class="two-column">
+    <div class="profile">
         <ProfileForm />
         <ChangePasswordForm />
     </div>
 </template>
 
 <style scoped>
-.two-column {
+.profile {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: flex-start;
-    align-items: start;
-    gap: 36px;
+    gap: 8px;
     width: 100%;
+
+    @media screen and (min-width: 1024px) {
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: start;
+        gap: 36px;
+        width: 100%;
+    }
 }
 </style>

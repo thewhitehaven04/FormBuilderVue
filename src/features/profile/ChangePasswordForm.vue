@@ -64,10 +64,10 @@ const onSubmit = handleSubmit((data) => {
 
 <style scoped>
 .card {
-    max-width: 680px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    max-width: 768px;
 }
 
 form {

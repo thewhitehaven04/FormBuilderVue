@@ -6,9 +6,9 @@ import { useForm } from 'vee-validate'
 import { ref, watch } from 'vue'
 import { fetchUserData } from '@/services/auth.ts'
 import { useFetcher } from '@/services/useFetcher.ts'
-import type { User } from '@supabase/supabase-js'
 import { format } from 'date-fns'
-import { CheckCircle2, Pencil, AtSign, ClipboardList, LoaderCircle } from 'lucide-vue-next'
+import { CheckCircle2, Pencil, AtSign, ClipboardList, CircleX } from 'lucide-vue-next'
+import { getFormCount } from '@/services/forms.ts'
 
 const schema = z.object({
     name: z.string().min(1),
@@ -28,15 +28,17 @@ const { defineField, handleSubmit, handleReset } = useForm<TChangeMetadataDto>({
     validationSchema,
 })
 
-const { query, data, isPending } = useFetcher<User | null>(async () => {
-    return (await fetchUserData()).data.user
-})
+const getUserData = async () => {
+    const userData = await fetchUserData()
+    const count = (await getFormCount(userData.data.user?.id || ''))
+    return { userData: userData.data, formsCreated: count }
+}
+
+const { query, data } = useFetcher(async () => await getUserData())
 
 query()
 
-const onProfileUpdateSubmit = handleSubmit((data) => {
-    toggleIsEditing()
-})
+const onProfileUpdateSubmit = handleSubmit(() => toggleIsEditing())
 
 const onReset = () => {
     handleReset()
@@ -49,13 +51,15 @@ const [lastName, lastNameProps] = defineField('lastName')
 watch(
     data,
     (data) => {
-        if (data) {
-            name.value = data.user_metadata.firstName
-            lastName.value = data.user_metadata.lastName
+        const user = data?.userData.user
+        if (user) {
+            name.value = user.user_metadata.firstName
+            lastName.value = user.user_metadata.lastName
         }
     },
     { immediate: true },
 )
+
 </script>
 
 <template>
@@ -64,50 +68,63 @@ watch(
             <div class="title">
                 Profile
                 <div class="form-top-row">
-                    <Button v-if="isEditing" form="profile" type="submit"
-                        variant="text" size="small">
+                    <Button
+                        v-if="isEditing"
+                        form="profile"
+                        type="submit"
+                        variant="text"
+                        size="small"
+                    >
                         <CheckCircle2 />
                     </Button>
-                    <Button v-else variant="text" @click="toggleIsEditing"
-                        size="small">
+                    <Button v-else variant="text" @click="toggleIsEditing" size="small">
                         <Pencil />
                     </Button>
                 </div>
             </div>
         </template>
         <template #content>
-            <div v-if="!isPending" class="form-content">
-                <form id="profile" @submit="onProfileUpdateSubmit"
-                    @reset="onReset">
+            <div class="form-content">
+                <form id="profile" @submit="onProfileUpdateSubmit" @reset="onReset">
                     <IconField>
                         <InputIcon class="pi pi-user" />
-                        <InputText type="text" name="name" placeholder="Name"
-                            v-model="name" v-bind="nameProps"
-                            :disabled="!isEditing" />
+                        <InputText
+                            type="text"
+                            name="name"
+                            placeholder="Name"
+                            v-model="name"
+                            v-bind="nameProps"
+                            :disabled="!isEditing"
+                        />
                     </IconField>
                     <IconField>
                         <InputIcon class="pi pi-user" />
-                        <InputText type="text" name="lastName"
-                            placeholder="Last name" v-model="lastName"
-                            v-bind="lastNameProps" :disabled="!isEditing" />
+                        <InputText
+                            type="text"
+                            name="lastName"
+                            placeholder="Last name"
+                            v-model="lastName"
+                            v-bind="lastNameProps"
+                            :disabled="!isEditing"
+                        />
                     </IconField>
                 </form>
                 <div class="read-only-row">
                     <AtSign />
-                    <div>{{ data?.email }}</div>
+                    <div>{{ data?.userData.user?.email }}</div>
                 </div>
                 <div class="read-only-row">
                     <ClipboardList />
-                    <div>Forms created: 1</div>
+                    <div>Forms created: {{ data?.formsCreated }}</div>
                 </div>
                 <div class="read-only-row">
                     <ClipboardList />
                     <div>
                         Registration date:
                         {{
-                        data?.created_at
-                        ? format(data?.created_at, 'dd.mm.yyyy, HH:MM:SS')
-                        : null
+                            data?.userData.user?.created_at
+                                ? format(data?.userData.user.created_at, 'dd.mm.yyyy, HH:MM:SS')
+                                : null
                         }}
                     </div>
                 </div>
@@ -116,7 +133,6 @@ watch(
                     Reset
                 </Button>
             </div>
-            <LoaderCircle v-else />
         </template>
     </Card>
 </template>
@@ -130,6 +146,7 @@ form {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    max-width: 768px;
 }
 
 .read-only-row {
