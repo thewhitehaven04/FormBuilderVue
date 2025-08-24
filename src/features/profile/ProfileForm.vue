@@ -41,17 +41,19 @@ const onReset = () => {
     toggleIsEditing()
 }
 
-query()
-
 const [name, nameProps] = defineField('name')
 const [lastName, lastNameProps] = defineField('lastName')
 
-watch(data, (data) => {
-    if (data) {
-        name.value = data.user_metadata.firstName
-        lastName.value = data.user_metadata.lastName
-    }
-})
+watch(
+    data,
+    (data) => {
+        if (data) {
+            name.value = data.user_metadata.firstName
+            lastName.value = data.user_metadata.lastName
+        }
+    },
+    { immediate: true },
+)
 </script>
 
 <template>
@@ -113,7 +115,11 @@ watch(data, (data) => {
                     <ClipboardList />
                     <div>
                         Registration date:
-                        {{ data?.created_at ? format(data?.created_at, 'dd.mm.yyyy, HH:MM:SS') : null }}
+                        {{
+                            data?.created_at
+                                ? format(data?.created_at, 'dd.mm.yyyy, HH:MM:SS')
+                                : null
+                        }}
                     </div>
                 </div>
                 <Button :disabled="!isEditing" form="profile" type="reset">

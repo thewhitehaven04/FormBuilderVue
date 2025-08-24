@@ -1,15 +1,17 @@
-import { inject, ref } from 'vue'
-import { nanoid } from 'nanoid'
-import { createForm } from '@/services/forms.ts'
+import { inject } from 'vue'
+import { createForm, editForm } from '@/services/forms.ts'
+import { useFieldArray, useForm } from 'vee-validate'
+import z from 'zod'
+import { toTypedSchema } from '@vee-validate/zod'
 
 interface IBaseEntry {
-    id: number
+    id?: number
     question: string
     isRequired: boolean
 }
 
 export interface IOption {
-    id: number
+    id?: number
     text: string
 }
 
@@ -39,14 +41,32 @@ export type TQuestion =
     | IMultipleChoiceQuestion
     | ISingleChoiceQuestion
 
-export const getFormProvider = () => {
-    const title = ref<string | null>(null)
-    const description = ref<string | null>(null)
-    const questions = ref<TQuestion[]>([])
+export interface IForm {
+    title: string | null
+    description: string | null
+    questions: TQuestion[]
+}
+
+const schema = z.object({
+    title: z.string().min(8),
+    description: z.string().min(8),
+    questions: z.array(
+        z.object({
+            title: z.string().min(8),
+        }),
+    ),
+})
+
+const validationSchema = toTypedSchema(schema)
+
+export const getFormProvider = (formId?: number) => {
+    const { values, setFieldValue } = useForm<IForm>({
+        validationSchema,
+    })
+    const questions = useFieldArray<IForm['questions'][number]>('questions')
 
     const addQuestion = (type: TQuestion['type']) => {
-        questions.value.push({
-            id: nanoid(),
+        questions.push({
             type,
             question: '',
             isRequired: true,
@@ -54,18 +74,17 @@ export const getFormProvider = () => {
         })
     }
 
-    const updateQuestion = (updatedRecord: Partial<TQuestion> & { id: string }) => {
-        const i = questions.value.findIndex((entry) => entry.id === updatedRecord.id)
-        questions.value[i] = { ...questions.value[i], ...updatedRecord }
+    const updateQuestion = (idx: number, updatedRecord: Partial<TQuestion>) => {
+        questions.update(idx, { ...questions.fields.value[idx].value, ...updatedRecord })
     }
 
     const onFormCreate = (onError: () => void, onSuccess: () => void) => {
-        if (title.value && description.value) {
+        if (values.title && values.description) {
             try {
                 createForm({
-                    title: title.value,
-                    description: description.value,
-                    questions: questions.value,
+                    title: values.title,
+                    description: values.description,
+                    questions: values.questions,
                 })
                 onSuccess()
             } catch {
@@ -73,38 +92,45 @@ export const getFormProvider = () => {
             }
         }
 
-        questions.value = []
-        title.value = ''
-        description.value = ''
+        values.questions = []
+        values.title = null
+        values.description = null
     }
 
-    const copyQuestion = (entryId: string) => {
-        const i = questions.value.findIndex((entry) => entry.id === entryId)
-        questions.value = [
-            ...questions.value.slice(0, i),
-            { ...questions.value[i], id: nanoid() },
-            ...questions.value.slice(i),
-        ]
+    const copyQuestion = (idx: number) => {
+        questions.insert(idx, questions.fields.value[idx].value)
     }
 
-    const removeQuestion = (entryId: string) => {
-        questions.value = questions.value.filter((entry) => entry.id !== entryId)
+    const removeQuestion = (idx: number) => {
+        questions.remove(idx)
     }
 
-    const onFormEdit = () => {
-        // placeholder
+    const onFormEdit = async (onError: () => void, onSuccess: () => void) => {
+        try {
+            if (formId) {
+                await editForm(formId, {
+                    title: values.title || '',
+                    description: values.description || '',
+                    questions: values.questions,
+                })
+            }
+            onSuccess()
+        } catch {
+            onError()
+        }
     }
 
     return {
-        title,
-        description,
-        questions,
+        title: values.title,
+        description: values.description,
+        questions: questions.fields,
         addQuestion,
         updateQuestion,
         copyQuestion,
         removeQuestion,
         onFormCreate,
         onFormEdit,
+        setFieldValue
     }
 }
 

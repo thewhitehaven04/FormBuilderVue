@@ -65,10 +65,10 @@ watch(
                     "
                 />
                 <ul>
-                    <li v-for="option in fields" class="option-row" :key="option.key">
+                    <li v-for="(option, idx) in fields" class="option-row" :key="option.key">
                         <Checkbox v-if="option.value.type === 'singleChoice'" disabled />
                         <RadioButton v-else disabled />
-                        <InputText type="text" @valueChange="(val) => update(option.key, val)" />
+                        <InputText type="text" @valueChange="(val) => update(idx, val)" />
                         <Button
                             type="button"
                             size="small"

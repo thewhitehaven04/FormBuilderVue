@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import { InputText, Textarea } from 'primevue'
-import { useFormBuilder } from '@/features/formBuilder/useFormBuilder.ts'
 import { Card } from 'primevue'
+import { useFormContext } from 'vee-validate'
+import type { IForm } from '@/features/formBuilder/useFormBuilder.ts'
 
-const { title, description } = useFormBuilder()
+const { defineField } = useFormContext<IForm>()
+
+const [title, titleProps] = defineField('title')
+const [description, descriptionProps] = defineField('description')
 </script>
 
 <template>
     <Card class="editor">
         <template #title>
-            <InputText placeholder="Title" v-model="title" />
+            <InputText placeholder="Title" v-model="title" v-bind="titleProps" />
         </template>
         <template #subtitle>
-            <Textarea placeholder="Description" v-model="description"  />
+            <Textarea placeholder="Description" v-model="description" v-bind="descriptionProps"/>
         </template>
     </Card>
 </template>
@@ -23,7 +27,8 @@ const { title, description } = useFormBuilder()
     flex-direction: column;
 }
 
-input, textarea {
+input,
+textarea {
     min-width: 450px;
     width: 100%;
 }

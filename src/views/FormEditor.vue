@@ -11,25 +11,33 @@ import { useRoute } from 'vue-router'
 const { params } = useRoute()
 const { data, query } = useFetcher(async () => await fetchForm(Number.parseInt(params.id ?? '0')))
 
+watch(
+    () => params.id,
+    () => query(),
+    { immediate: true },
+)
+
 const providerValue = getFormProvider()
-query()
 
 watch(
     () => data.value,
     (fetchedData) => {
         if (fetchedData) {
-            providerValue.title.value = fetchedData.title
-            providerValue.description.value = fetchedData.description
-            providerValue.questions.value = fetchedData.questions.map((q) => ({
-                type: q.question_type,
-                isRequired: !!q.is_required,
-                question: q.text,
-                id: q.id,
-                options: q.options.map((option) => ({
-                    id: option.id,
-                    text: option.text,
+            providerValue.setFieldValue('title', fetchedData.title)
+            providerValue.setFieldValue('description', fetchedData.description)
+            providerValue.setFieldValue(
+                'questions',
+                fetchedData.questions.map((q) => ({
+                    type: q.question_type,
+                    isRequired: !!q.is_required,
+                    question: q.text,
+                    id: q.id,
+                    options: q.options.map((option) => ({
+                        id: option.id,
+                        text: option.text,
+                    })),
                 })),
-            }))
+            )
         }
     },
 )

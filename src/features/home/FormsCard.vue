@@ -5,13 +5,12 @@ import { Loader } from 'lucide-vue-next'
 import { useFetcher } from '@/services/useFetcher.ts'
 import { deleteForm, fetchForms } from '@/services/forms.ts'
 import FormPreview from '@/features/home/FormPreview.vue'
-import debounce from 'debounce'
 
 const options = [
     { label: 'Newest first', value: false },
     { label: 'Oldest first', value: false },
 ]
-const searchQuery = ref('')
+const searchQuery = ref(null)
 const activeOptions = ref(options[1].value)
 
 const { data, query, isPending } = useFetcher(
@@ -24,7 +23,7 @@ const { data, query, isPending } = useFetcher(
         }),
 )
 
-watch([searchQuery, activeOptions], () => query())
+watch([searchQuery, activeOptions], () => query(), { immediate: true })
 
 const handleRemove = (formId: number) => {
     deleteForm(formId)

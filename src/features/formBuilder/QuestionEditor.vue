@@ -11,26 +11,26 @@ const { questions, copyQuestion, updateQuestion, removeQuestion } = useFormBuild
     <Card class="outer-border">
         <template #content>
             <ul v-if="questions.length > 0">
-                <li v-for="q in questions" :key="q.id">
+                <li v-for="(q, idx) in questions" :key="q.key">
                     <TextQuestionCreator
-                        v-if="q.type === 'oneLine' || q.type === 'multiLine'"
-                        :type="q.type"
-                        :is-required="q.isRequired"
-                        :question="q.question"
-                        @text-answer-form-change="(value) => updateQuestion({ id: q.id, ...value })"
-                        @copy="copyQuestion(q.id)"
-                        @remove="removeQuestion(q.id)"
+                        v-if="q.value.type === 'oneLine' || q.value.type === 'multiLine'"
+                        :type="q.value.type"
+                        :is-required="q.value.isRequired"
+                        :question="q.value.question"
+                        @text-answer-form-change="(value) => updateQuestion(idx, value)"
+                        @copy="copyQuestion(idx)"
+                        @remove="removeQuestion(idx)"
                     />
                     <ChoiceQuestionCreator
                         v-else
-                        :type="q.type"
-                        :question="q.question"
-                        :is-required="q.isRequired"
+                        :type="q.value.type"
+                        :question="q.value.question"
+                        :is-required="q.value.isRequired"
                         @choice-question-form-change="
-                            (value) => updateQuestion({ id: q.id, ...value })
+                            (value) => updateQuestion(idx, value)
                         "
-                        @copy="copyQuestion(q.id)"
-                        @remove="removeQuestion(q.id)"
+                        @copy="copyQuestion(idx)"
+                        @remove="removeQuestion(idx)"
                     />
                 </li>
             </ul>

@@ -7,6 +7,8 @@ export interface IFormCreateRequest {
     questions: TQuestion[]
 }
 
+type TFormEditRequest = IFormCreateRequest
+
 // refactor this later to use Postgres functions, because supabase client API has no support for transactions
 async function createForm(form: IFormCreateRequest) {
     const { data: created } = await supabase
@@ -20,7 +22,6 @@ async function createForm(form: IFormCreateRequest) {
         .throwOnError()
 
     for (const question of form.questions) {
-        console.log('iteration')
         const { data: q } = await supabase
             .from('questions')
             .insert({
@@ -58,6 +59,10 @@ async function createForm(form: IFormCreateRequest) {
         .throwOnError()
 }
 
+async function editForm(formId: number, form: TFormEditRequest) {
+    supabase.from('forms').update(form).eq('id', formId).throwOnError()
+}
+
 async function fetchForms({
     skip,
     count,
@@ -66,7 +71,7 @@ async function fetchForms({
 }: {
     skip: number
     count: number
-    text?: string
+    text: string | null
     isAscending: boolean
 }) {
     if (!text) {
@@ -109,4 +114,4 @@ async function deleteForm(id: number) {
     await supabase.from('forms').delete().eq('id', id).throwOnError()
 }
 
-export { createForm, fetchForms, fetchForm, deleteForm }
+export { createForm, fetchForms, fetchForm, deleteForm, editForm }
