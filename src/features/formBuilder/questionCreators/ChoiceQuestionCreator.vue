@@ -1,50 +1,18 @@
 <script setup lang="ts">
 import { Textarea, Checkbox, RadioButton, InputText, Button } from 'primevue'
-import { useFieldArray, useForm } from 'vee-validate'
+import { useField, useFieldArray } from 'vee-validate'
 import { CircleMinus } from 'lucide-vue-next'
 import QuestionCreator from '@/features/formBuilder/questionCreators/QuestionCreator.vue'
-import type {
-    IMultipleChoiceQuestion,
-    ISingleChoiceQuestion,
-} from '@/features/formBuilder/useFormBuilder.ts'
-import { watch } from 'vue'
+import type { IOption } from '@/features/formBuilder/useFormBuilder.ts'
 
 const props = defineProps<{
+    idx: number
     type: 'singleChoice' | 'multipleChoice'
     question: string
     isRequired: boolean
 }>()
 
-const emit = defineEmits<{
-    (
-        e: 'choice-question-form-change',
-        value: Partial<ISingleChoiceQuestion | IMultipleChoiceQuestion>,
-    ): void
-}>()
-
-type TOption = {
-    type: (typeof props)['type']
-    text: string
-}
-
-const { defineField } = useForm({
-    initialValues: {
-        options: [] as TOption[],
-    },
-})
-
-const { push, fields, remove, update } = useFieldArray<TOption>('options')
-
-const [options] = defineField('options')
-
-watch(
-    () => options,
-    ({ value }) => {
-        emit('choice-question-form-change', {
-            options: value.map((option) => ({ text: option.text })),
-        })
-    },
-)
+const { push, fields, remove, update } = useFieldArray<IOption>(`questions[${props.idx}].options`)
 </script>
 
 <template>
@@ -60,30 +28,24 @@ watch(
                     name="question"
                     type="text"
                     :default-value="props.question"
-                    @value-change="
-                        (value) => $emit('choice-question-form-change', { question: value })
-                    "
+                    @value-change="(value) => $emit('choice-question-form-change', { text: value })"
                 />
                 <ul>
                     <li v-for="(option, idx) in fields" class="option-row" :key="option.key">
-                        <Checkbox v-if="option.value.type === 'singleChoice'" disabled />
+                        <Checkbox v-if="props.type === 'singleChoice'" disabled />
                         <RadioButton v-else disabled />
-                        <InputText type="text" @valueChange="(val) => update(idx, val)" />
-                        <Button
-                            type="button"
-                            size="small"
-                            variant="text"
-                            @click="remove(option.key as number)"
-                        >
+                        <InputText
+                            type="text"
+                            :name="fields[idx].value.text"
+                            @value-change="(value) => update(idx, { text: value ?? '' })"
+                        />
+                        <Button type="button" size="small" variant="text" @click="remove(idx)">
                             <CircleMinus />
                         </Button>
                     </li>
                 </ul>
-                <Button
-                    type="button"
-                    variant="outlined"
-                    @click="push({ type: props.type, text: '' })"
-                    >Add answer option
+                <Button type="button" variant="outlined" @click="push({ text: '' })"
+                    >Add option
                 </Button>
             </div>
         </template>

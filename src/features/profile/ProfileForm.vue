@@ -32,6 +32,8 @@ const { query, data, isPending } = useFetcher<User | null>(async () => {
     return (await fetchUserData()).data.user
 })
 
+query()
+
 const onProfileUpdateSubmit = handleSubmit((data) => {
     toggleIsEditing()
 })
@@ -62,16 +64,12 @@ watch(
             <div class="title">
                 Profile
                 <div class="form-top-row">
-                    <Button
-                        v-if="isEditing"
-                        form="profile"
-                        type="submit"
-                        variant="text"
-                        size="small"
-                    >
+                    <Button v-if="isEditing" form="profile" type="submit"
+                        variant="text" size="small">
                         <CheckCircle2 />
                     </Button>
-                    <Button v-else variant="text" @click="toggleIsEditing" size="small">
+                    <Button v-else variant="text" @click="toggleIsEditing"
+                        size="small">
                         <Pencil />
                     </Button>
                 </div>
@@ -79,28 +77,19 @@ watch(
         </template>
         <template #content>
             <div v-if="!isPending" class="form-content">
-                <form id="profile" @submit="onProfileUpdateSubmit" @reset="onReset">
+                <form id="profile" @submit="onProfileUpdateSubmit"
+                    @reset="onReset">
                     <IconField>
                         <InputIcon class="pi pi-user" />
-                        <InputText
-                            type="text"
-                            name="name"
-                            placeholder="Name"
-                            v-model="name"
-                            v-bind="nameProps"
-                            :disabled="!isEditing"
-                        />
+                        <InputText type="text" name="name" placeholder="Name"
+                            v-model="name" v-bind="nameProps"
+                            :disabled="!isEditing" />
                     </IconField>
                     <IconField>
                         <InputIcon class="pi pi-user" />
-                        <InputText
-                            type="text"
-                            name="lastName"
-                            placeholder="Last name"
-                            v-model="lastName"
-                            v-bind="lastNameProps"
-                            :disabled="!isEditing"
-                        />
+                        <InputText type="text" name="lastName"
+                            placeholder="Last name" v-model="lastName"
+                            v-bind="lastNameProps" :disabled="!isEditing" />
                     </IconField>
                 </form>
                 <div class="read-only-row">
@@ -116,9 +105,9 @@ watch(
                     <div>
                         Registration date:
                         {{
-                            data?.created_at
-                                ? format(data?.created_at, 'dd.mm.yyyy, HH:MM:SS')
-                                : null
+                        data?.created_at
+                        ? format(data?.created_at, 'dd.mm.yyyy, HH:MM:SS')
+                        : null
                         }}
                     </div>
                 </div>

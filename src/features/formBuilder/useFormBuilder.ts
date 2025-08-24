@@ -1,4 +1,4 @@
-import { inject } from 'vue'
+import { inject, ref } from 'vue'
 import { createForm, editForm } from '@/services/forms.ts'
 import { useFieldArray, useForm } from 'vee-validate'
 import z from 'zod'
@@ -6,7 +6,7 @@ import { toTypedSchema } from '@vee-validate/zod'
 
 interface IBaseEntry {
     id?: number
-    question: string
+    text: string
     isRequired: boolean
 }
 
@@ -63,12 +63,14 @@ export const getFormProvider = (formId?: number) => {
     const { values, setFieldValue } = useForm<IForm>({
         validationSchema,
     })
+    const questionsToDelete = ref<number[]>([])
+    const optionsToDelete = ref<number[]>([])
     const questions = useFieldArray<IForm['questions'][number]>('questions')
 
     const addQuestion = (type: TQuestion['type']) => {
         questions.push({
             type,
-            question: '',
+            text: '',
             isRequired: true,
             options: [],
         })
@@ -103,16 +105,24 @@ export const getFormProvider = (formId?: number) => {
 
     const removeQuestion = (idx: number) => {
         questions.remove(idx)
+        questionsToDelete.value.push(idx)
     }
 
     const onFormEdit = async (onError: () => void, onSuccess: () => void) => {
         try {
             if (formId) {
-                await editForm(formId, {
-                    title: values.title || '',
-                    description: values.description || '',
-                    questions: values.questions,
-                })
+                await editForm(
+                    formId,
+                    {
+                        title: values.title || '',
+                        description: values.description || '',
+                        questions: values.questions,
+                    },
+                    optionsToDelete.value,
+                    questionsToDelete.value,
+                )
+                questionsToDelete.value = []
+                optionsToDelete.value = []
             }
             onSuccess()
         } catch {
@@ -130,7 +140,7 @@ export const getFormProvider = (formId?: number) => {
         removeQuestion,
         onFormCreate,
         onFormEdit,
-        setFieldValue
+        setFieldValue,
     }
 }
 

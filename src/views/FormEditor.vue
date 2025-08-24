@@ -9,7 +9,9 @@ import { fetchForm } from '@/services/forms.ts'
 import { useRoute } from 'vue-router'
 
 const { params } = useRoute()
-const { data, query } = useFetcher(async () => await fetchForm(Number.parseInt(params.id ?? '0')))
+
+const paramsId = Number.parseInt(typeof params.id === 'string' ? params.id : '0')
+const { data, query } = useFetcher(async () => await fetchForm(paramsId))
 
 watch(
     () => params.id,
@@ -17,7 +19,7 @@ watch(
     { immediate: true },
 )
 
-const providerValue = getFormProvider()
+const providerValue = getFormProvider(paramsId)
 
 watch(
     () => data.value,
@@ -30,12 +32,11 @@ watch(
                 fetchedData.questions.map((q) => ({
                     type: q.question_type,
                     isRequired: !!q.is_required,
-                    question: q.text,
-                    id: q.id,
                     options: q.options.map((option) => ({
                         id: option.id,
                         text: option.text,
                     })),
+                    ...q,
                 })),
             )
         }

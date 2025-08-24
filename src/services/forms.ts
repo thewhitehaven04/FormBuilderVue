@@ -27,7 +27,8 @@ async function createForm(form: IFormCreateRequest) {
             .insert({
                 form_id: created.id,
                 is_required: question.isRequired,
-                text: question.question,
+                question_type: question.type,
+                text: question.text,
             })
             .select('*')
             .single()
@@ -51,7 +52,7 @@ async function createForm(form: IFormCreateRequest) {
             form.questions
                 .filter((q) => q.type === 'oneLine' || q.type === 'multiLine')
                 .map((q) => ({
-                    text: q.question,
+                    text: q.text,
                     is_required: q.isRequired,
                     form_id: created.id,
                 })),
@@ -59,8 +60,45 @@ async function createForm(form: IFormCreateRequest) {
         .throwOnError()
 }
 
-async function editForm(formId: number, form: TFormEditRequest) {
-    supabase.from('forms').update(form).eq('id', formId).throwOnError()
+async function editForm(formId: number, form: TFormEditRequest, optionsToDelete: number[], questionsToDelete: number[]) {
+    supabase
+        .from('forms')
+        .update({
+            title: form.description,
+            description: form.description,
+        })
+        .eq('id', formId)
+        .throwOnError()
+
+    supabase
+        .from('questions')
+        .upsert(
+            form.questions.map((q) => ({
+                id: q.id,
+                form_id: formId,
+                is_required: q.isRequired,
+                question_type: q.type,
+                text: q.text,
+            })),
+        )
+        .throwOnError()
+
+    for (const question of form.questions) {
+        if (question.id) {
+            await supabase
+                .from('options')
+                .upsert(
+                    question.options.map((opt) => ({
+                        ...opt,
+                        question_id: question.id ?? 0
+                    })),
+                )
+                .throwOnError()
+        }
+    }
+
+    deleteOptions(optionsToDelete)
+    deleteQuestions(questionsToDelete)
 }
 
 async function fetchForms({
@@ -110,8 +148,16 @@ async function fetchForm(id: number) {
     ).data
 }
 
-async function deleteForm(id: number) {
-    await supabase.from('forms').delete().eq('id', id).throwOnError()
+async function deleteForm(id: number[]) {
+    await supabase.from('forms').delete().in('id', id).throwOnError()
 }
 
-export { createForm, fetchForms, fetchForm, deleteForm, editForm }
+async function deleteOptions(optionId: number[]) {
+    supabase.from('options').delete().in('id', optionId).throwOnError()
+}
+
+async function deleteQuestions(questionId: number[]) {
+    supabase.from('questions').delete().in('id', questionId).throwOnError()
+}
+
+export { createForm, fetchForms, fetchForm, deleteForm, editForm, deleteOptions, deleteQuestions }

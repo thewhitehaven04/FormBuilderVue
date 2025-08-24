@@ -25,7 +25,7 @@ defineEmits<{
                 type="text"
                 :default-value="props.question"
                 placeholder="Question"
-                @value-change="(value) => $emit('text-answer-form-change', { question: value })"
+                @value-change="(value) => $emit('text-answer-form-change', { text: value })"
             />
         </template>
     </QuestionCreator>
