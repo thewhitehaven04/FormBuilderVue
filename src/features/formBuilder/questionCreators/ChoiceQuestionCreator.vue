@@ -2,12 +2,11 @@
 import { Textarea, Checkbox, RadioButton, InputText, Button } from 'primevue'
 import { useFieldArray } from 'vee-validate'
 import QuestionCreator from '@/features/formBuilder/questionCreators/QuestionCreator.vue'
-import type {
-    IMultipleChoiceQuestion,
-    IOption,
-    ISingleChoiceQuestion,
+import {
+    type IMultipleChoiceQuestion,
+    type IOption,
+    type ISingleChoiceQuestion,
 } from '@/features/formBuilder/useFormBuilder.ts'
-import { computed } from 'vue'
 
 const props = defineProps<{
     idx: number
@@ -16,12 +15,7 @@ const props = defineProps<{
     isRequired: boolean
 }>()
 
-const { push, fields, update } = useFieldArray<IOption>(`questions[${props.idx}].options`)
-const handleRemove = (idx: number) => {
-    const value = fields.value[idx].value
-    update(idx, { ...value, isDeleted: true })
-}
-const filteredFields = computed(() => fields.value.filter((f) => !f.value.isDeleted))
+const { push, fields, update, remove } = useFieldArray<IOption>(`questions[${props.idx}].options`)
 
 defineEmits<{
     (
@@ -29,6 +23,7 @@ defineEmits<{
         value: Partial<ISingleChoiceQuestion | IMultipleChoiceQuestion>,
     ): void
 }>()
+
 </script>
 
 <template>
@@ -49,7 +44,7 @@ defineEmits<{
                 />
                 <ul>
                     <li
-                        v-for="(option, idx) in filteredFields"
+                        v-for="(option, idx) in fields"
                         class="option-row"
                         :key="option.key"
                     >
@@ -65,7 +60,7 @@ defineEmits<{
                             type="button"
                             size="small"
                             variant="outlined"
-                            @click="handleRemove(idx)"
+                            @click="remove(idx)"
                             icon="pi pi-minus"
                         />
                     </li>

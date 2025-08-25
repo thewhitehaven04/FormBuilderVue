@@ -65,7 +65,7 @@ async function editForm(formId: number, form: TFormEditRequest) {
         .from('questions')
         .insert(
             form.questions
-                .filter((q) => !q.id && !q.isDeleted)
+                .filter((q) => !q.id)
                 .map((q) => ({
                     form_id: formId,
                     is_required: q.isRequired,
@@ -79,7 +79,7 @@ async function editForm(formId: number, form: TFormEditRequest) {
         .from('questions')
         .upsert(
             form.questions
-                .filter((q) => q.id != null && !q.isDeleted)
+                .filter((q) => q.id != null)
                 .map((q) => ({
                     id: q.id,
                     form_id: formId,
@@ -90,12 +90,21 @@ async function editForm(formId: number, form: TFormEditRequest) {
         )
         .throwOnError()
 
-    await deleteQuestions(
-        form.questions.filter((q) => q.isDeleted && q.id !== undefined).map((q) => q.id as number),
-   )
-
     for (const question of form.questions) {
         if (question.id) {
+            const existingOptions = (
+                await supabase
+                    .from('options')
+                    .select('*')
+                    .eq('question_id', question.id)
+                    .throwOnError()
+            ).data
+            const currentOptions = question.options.map((opt) => opt.id)
+            const optionsToDelete = existingOptions
+                .filter((opt) => !currentOptions.includes(opt.id))
+                .map((opt) => opt.id)
+            await supabase.from('options').delete().in('id', optionsToDelete).throwOnError()
+
             await supabase.from('options').insert(
                 question.options
                     .filter((opt) => !opt.id)
@@ -113,9 +122,6 @@ async function editForm(formId: number, form: TFormEditRequest) {
                         text: opt.text,
                     })),
                 { onConflict: 'id' },
-            )
-            await deleteOptions(
-                question.options.filter((opt) => opt.isDeleted).map((opt) => opt as number),
             )
         }
     }

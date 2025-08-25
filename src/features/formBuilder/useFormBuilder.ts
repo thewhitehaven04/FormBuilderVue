@@ -1,5 +1,5 @@
-import { computed, inject } from 'vue'
-import { createForm, deleteForm, editForm } from '@/services/forms.ts'
+import { inject, ref } from 'vue'
+import { createForm, deleteForm, deleteQuestions, editForm } from '@/services/forms.ts'
 import { useFieldArray, useForm } from 'vee-validate'
 import z from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
@@ -8,13 +8,11 @@ interface IBaseQuestion {
     id?: number
     text: string
     isRequired: boolean
-    isDeleted: boolean
 }
 
 export interface IOption {
     id?: number
     text: string
-    isDeleted?: boolean
 }
 
 export interface IOneLineQuestion extends IBaseQuestion {
@@ -65,15 +63,15 @@ export const getFormProvider = (formId?: number) => {
     const { values, setFieldValue, setValues } = useForm<IForm>({
         validationSchema,
     })
+    const deletedQuestionIds = ref<number[]>([])
     const questions = useFieldArray<IForm['questions'][number]>('questions')
 
     const addQuestion = (type: TQuestion['type']) => {
         questions.push({
             type,
-            text: '', 
+            text: '',
             isRequired: true,
             options: [],
-            isDeleted: false
         })
     }
 
@@ -118,20 +116,22 @@ export const getFormProvider = (formId?: number) => {
     }
 
     const removeQuestion = (idx: number) => {
+        const questionId = questions.fields.value[idx].value.id
         questions.remove(idx)
+        if (questionId) {
+            deletedQuestionIds.value.push(idx)
+        }
     }
 
     const onFormEdit = async (onError: () => void, onSuccess: () => void) => {
         try {
             if (formId) {
-                await editForm(
-                    formId,
-                    {
-                        title: values.title || '',
-                        description: values.description || '',
-                        questions: values.questions,
-                    },
-                )
+                await editForm(formId, {
+                    title: values.title || '',
+                    description: values.description || '',
+                    questions: values.questions,
+                })
+                deleteQuestions(deletedQuestionIds.value)
             }
             onSuccess()
         } catch {
@@ -139,12 +139,10 @@ export const getFormProvider = (formId?: number) => {
         }
     }
 
-    const filteredQuestions = computed(() => questions.fields.value.filter((q) => !q.value.isDeleted))
-
     return {
         title: values.title,
         description: values.description,
-        questions: filteredQuestions,
+        questions: questions.fields,
         addQuestion,
         updateQuestion,
         copyQuestion,
