@@ -1,36 +1,38 @@
-import { inject, ref } from 'vue'
-import { createForm, editForm } from '@/services/forms.ts'
+import { computed, inject } from 'vue'
+import { createForm, deleteForm, editForm } from '@/services/forms.ts'
 import { useFieldArray, useForm } from 'vee-validate'
 import z from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 
-interface IBaseEntry {
+interface IBaseQuestion {
     id?: number
     text: string
     isRequired: boolean
+    isDeleted: boolean
 }
 
 export interface IOption {
     id?: number
     text: string
+    isDeleted?: boolean
 }
 
-export interface IOneLineQuestion extends IBaseEntry {
+export interface IOneLineQuestion extends IBaseQuestion {
     type: 'oneLine'
     options: IOption[]
 }
 
-export interface IMultiLineQuestion extends IBaseEntry {
+export interface IMultiLineQuestion extends IBaseQuestion {
     type: 'multiLine'
     options: IOption[]
 }
 
-export interface ISingleChoiceQuestion extends IBaseEntry {
+export interface ISingleChoiceQuestion extends IBaseQuestion {
     type: 'singleChoice'
     options: IOption[]
 }
 
-export interface IMultipleChoiceQuestion extends IBaseEntry {
+export interface IMultipleChoiceQuestion extends IBaseQuestion {
     type: 'multipleChoice'
     options: IOption[]
 }
@@ -60,19 +62,18 @@ const schema = z.object({
 const validationSchema = toTypedSchema(schema)
 
 export const getFormProvider = (formId?: number) => {
-    const { values, setFieldValue } = useForm<IForm>({
+    const { values, setFieldValue, setValues } = useForm<IForm>({
         validationSchema,
     })
-    const questionsToDelete = ref<number[]>([])
-    const optionsToDelete = ref<number[]>([])
     const questions = useFieldArray<IForm['questions'][number]>('questions')
 
     const addQuestion = (type: TQuestion['type']) => {
         questions.push({
             type,
-            text: '',
+            text: '', 
             isRequired: true,
             options: [],
+            isDeleted: false
         })
     }
 
@@ -94,9 +95,22 @@ export const getFormProvider = (formId?: number) => {
             }
         }
 
-        values.questions = []
-        values.title = null
-        values.description = null
+        _reset()
+    }
+
+    const _reset = () => {
+        setValues({
+            title: null,
+            description: null,
+            questions: [],
+        })
+    }
+
+    const onFormDelete = () => {
+        if (formId) {
+            deleteForm([formId])
+            _reset()
+        }
     }
 
     const copyQuestion = (idx: number) => {
@@ -105,7 +119,6 @@ export const getFormProvider = (formId?: number) => {
 
     const removeQuestion = (idx: number) => {
         questions.remove(idx)
-        questionsToDelete.value.push(idx)
     }
 
     const onFormEdit = async (onError: () => void, onSuccess: () => void) => {
@@ -118,11 +131,7 @@ export const getFormProvider = (formId?: number) => {
                         description: values.description || '',
                         questions: values.questions,
                     },
-                    optionsToDelete.value,
-                    questionsToDelete.value,
                 )
-                questionsToDelete.value = []
-                optionsToDelete.value = []
             }
             onSuccess()
         } catch {
@@ -130,16 +139,19 @@ export const getFormProvider = (formId?: number) => {
         }
     }
 
+    const filteredQuestions = computed(() => questions.fields.value.filter((q) => !q.value.isDeleted))
+
     return {
         title: values.title,
         description: values.description,
-        questions: questions.fields,
+        questions: filteredQuestions,
         addQuestion,
         updateQuestion,
         copyQuestion,
         removeQuestion,
         onFormCreate,
         onFormEdit,
+        onFormDelete,
         setFieldValue,
     }
 }

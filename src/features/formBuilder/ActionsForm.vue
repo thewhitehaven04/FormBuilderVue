@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { Button, Divider, useToast } from 'primevue'
 import { useFormBuilder } from '@/features/formBuilder/useFormBuilder.ts'
+import { useRoute, useRouter } from 'vue-router'
 
-const { addQuestion, onFormCreate, onFormEdit } = useFormBuilder()
+const { addQuestion, onFormCreate, onFormEdit, onFormDelete } = useFormBuilder()
 const toast = useToast()
+const { push } = useRouter()
+const { params } = useRoute()
 
 defineProps<{
     type: 'create' | 'edit'
@@ -21,6 +24,11 @@ const onSaveError = () => {
         severity: 'error',
         summary: 'Unable to save the form. Try again later',
     })
+}
+
+const handleFormDelete = () => {
+    onFormDelete()
+    push('/')
 }
 </script>
 
@@ -57,15 +65,45 @@ const onSaveError = () => {
             v-if="type === 'create'"
             size="small"
             variant="outlined"
+            severity="success"
             @click="onFormCreate(onSaveError, onSaveSuccess)"
-            >Save form
-        </Button>
+            label="Save form"
+            icon="pi pi-save"
+            icon-pos="left"
+        />
         <Button
             v-else
             size="small"
             variant="outlined"
+            severity="success"
             @click="onFormEdit(onSaveError, onSaveSuccess)"
-            >Edit form
+            label="Save changes"
+            icon="pi pi-save"
+        />
+        <Button
+            v-if="type === 'edit'"
+            size="small"
+            variant="outlined"
+            severity="danger"
+            @click="handleFormDelete"
+            icon="pi pi-trash"
+            icon-pos="left"
+            label="Delete form"
+        />
+        <Button
+            v-if="type === 'edit'"
+            size="small"
+            variant="outlined"
+            severity="info"
+            icon-class="left"
+            icon="pi pi-reply"
+            label="Respond"
+            as-child
+            v-slot="slotProps"
+        >
+            <RouterLink :to="`/respond/${params.id}`" :class="slotProps.class">
+                Respond
+            </RouterLink>
         </Button>
     </section>
 </template>
@@ -81,11 +119,12 @@ ul {
 section {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     gap: 8px;
 }
 
 h1 {
-    font-size: 18pt;
+    font-size: 16pt;
     font-weight: 600;
 }
 </style>

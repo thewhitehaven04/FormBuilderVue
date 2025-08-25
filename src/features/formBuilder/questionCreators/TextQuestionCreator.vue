@@ -18,6 +18,7 @@ defineEmits<{
     <QuestionCreator
         :title="props.type === 'oneLine' ? 'One-line question' : 'Multiline question'"
         :is-required="props.isRequired"
+        @required-change="$emit('text-answer-form-change', { isRequired: $event })"
     >
         <template #content>
             <Textarea
@@ -32,7 +33,6 @@ defineEmits<{
 </template>
 
 <style scoped>
-
 textarea {
     width: 100%;
     resize: vertical;

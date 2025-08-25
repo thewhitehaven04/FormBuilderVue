@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { Textarea, Checkbox, RadioButton, InputText, Button } from 'primevue'
-import { useField, useFieldArray } from 'vee-validate'
-import { CircleMinus } from 'lucide-vue-next'
+import { useFieldArray } from 'vee-validate'
 import QuestionCreator from '@/features/formBuilder/questionCreators/QuestionCreator.vue'
-import type { IOption } from '@/features/formBuilder/useFormBuilder.ts'
+import type {
+    IMultipleChoiceQuestion,
+    IOption,
+    ISingleChoiceQuestion,
+} from '@/features/formBuilder/useFormBuilder.ts'
+import { computed } from 'vue'
 
 const props = defineProps<{
     idx: number
@@ -12,7 +16,19 @@ const props = defineProps<{
     isRequired: boolean
 }>()
 
-const { push, fields, remove, update } = useFieldArray<IOption>(`questions[${props.idx}].options`)
+const { push, fields, update } = useFieldArray<IOption>(`questions[${props.idx}].options`)
+const handleRemove = (idx: number) => {
+    const value = fields.value[idx].value
+    update(idx, { ...value, isDeleted: true })
+}
+const filteredFields = computed(() => fields.value.filter((f) => !f.value.isDeleted))
+
+defineEmits<{
+    (
+        e: 'choice-question-form-change',
+        value: Partial<ISingleChoiceQuestion | IMultipleChoiceQuestion>,
+    ): void
+}>()
 </script>
 
 <template>
@@ -21,6 +37,7 @@ const { push, fields, remove, update } = useFieldArray<IOption>(`questions[${pro
             props.type === 'singleChoice' ? 'Single choice question' : 'Multiple choice question'
         "
         :is-required="props.isRequired"
+        @required-change="$emit('choice-question-form-change', { isRequired: $event })"
     >
         <template #content>
             <div class="content">
@@ -31,17 +48,26 @@ const { push, fields, remove, update } = useFieldArray<IOption>(`questions[${pro
                     @value-change="(value) => $emit('choice-question-form-change', { text: value })"
                 />
                 <ul>
-                    <li v-for="(option, idx) in fields" class="option-row" :key="option.key">
+                    <li
+                        v-for="(option, idx) in filteredFields"
+                        class="option-row"
+                        :key="option.key"
+                    >
                         <Checkbox v-if="props.type === 'singleChoice'" disabled />
                         <RadioButton v-else disabled />
                         <InputText
                             type="text"
                             :name="fields[idx].value.text"
+                            :default-value="fields[idx].value.text"
                             @value-change="(value) => update(idx, { text: value ?? '' })"
                         />
-                        <Button type="button" size="small" variant="text" @click="remove(idx)">
-                            <CircleMinus />
-                        </Button>
+                        <Button
+                            type="button"
+                            size="small"
+                            variant="outlined"
+                            @click="handleRemove(idx)"
+                            icon="pi pi-minus"
+                        />
                     </li>
                 </ul>
                 <Button type="button" variant="outlined" @click="push({ text: '' })"
@@ -56,7 +82,7 @@ const { push, fields, remove, update } = useFieldArray<IOption>(`questions[${pro
 .option-row {
     display: flex;
     flex-direction: row;
-    gap: 4px;
+    gap: 8px;
     width: 100%;
 }
 

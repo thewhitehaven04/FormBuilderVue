@@ -30,13 +30,13 @@ watch(
             providerValue.setFieldValue(
                 'questions',
                 fetchedData.questions.map((q) => ({
+                    ...q,
                     type: q.question_type,
                     isRequired: !!q.is_required,
                     options: q.options.map((option) => ({
                         id: option.id,
                         text: option.text,
                     })),
-                    ...q,
                 })),
             )
         }

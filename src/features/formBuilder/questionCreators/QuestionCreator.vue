@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import { Button, Card, Checkbox, Divider } from 'primevue'
 import { Copy, X } from 'lucide-vue-next'
-import { ref } from 'vue'
 
 const { title, isRequired } = defineProps<{ title: string; isRequired: boolean }>()
 defineEmits<{
     (e: 'copy'): void
     (e: 'remove'): void
+    (e: 'required-change', value: boolean): void
 }>()
 
 defineSlots<{
     content(): never
 }>()
-
-const isChecked = ref(isRequired)
 </script>
 
 <template>
@@ -35,7 +33,12 @@ const isChecked = ref(isRequired)
         <template #footer>
             <div class="actions">
                 <label>
-                    <Checkbox name="isRequired" v-model="isChecked" binary />
+                    <Checkbox
+                        name="isRequired"
+                        :default-value="isRequired"
+                        binary
+                        @value-change="$emit('required-change', $event)"
+                    />
                     Required
                 </label>
                 <Button type="button" variant="outlined" size="small" @click="$emit('copy')">

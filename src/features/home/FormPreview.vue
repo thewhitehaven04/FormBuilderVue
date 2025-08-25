@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Card, Divider, Button } from 'primevue'
-import { MessageCircle, Pencil, Trash2 } from 'lucide-vue-next'
 import { RouterLink } from 'vue-router'
 
 const { id, title, description, responseCount } = defineProps<{
@@ -25,19 +24,21 @@ defineEmits<{
         </template>
         <template #footer>
             <div class="actions">
-                <Button variant="text" size="small">
-                    <MessageCircle />
-                </Button>
-                <Divider layout="vertical" />
-                <RouterLink :to="{ path: `form/${id}` }">
-                    <Button variant="text" size="small">
-                        <Pencil />
-                    </Button>
+                <RouterLink :to="`/form/${id}/answers`">
+                    <Button
+                        variant="text"
+                        size="large"
+                        badge-severity="danger"
+                        :badge="responseCount.toString()"
+                        icon="pi pi-comments"
+                    />
                 </RouterLink>
                 <Divider layout="vertical" />
-                <Button variant="text" size="small" @click="$emit('remove')">
-                    <Trash2 />
-                </Button>
+                <RouterLink :to="`form/${id}`">
+                    <Button variant="text" size="large" icon="pi pi-pencil" />
+                </RouterLink>
+                <Divider layout="vertical" />
+                <Button variant="text" size="large" @click="$emit('remove')" icon="pi pi-trash" />
             </div>
         </template>
     </Card>
@@ -54,5 +55,8 @@ h2 {
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
+}
+.actions > a, .actions > button {
+    width: 100%;
 }
 </style>

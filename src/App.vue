@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import './globals.css'
+import 'primeicons/primeicons.css'
 import { Toast } from 'primevue'
 </script>
 

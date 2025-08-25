@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import TextQuestionCreator from '@/features/formBuilder/questionCreators/TextQuestionCreator.vue'
 import ChoiceQuestionCreator from '@/features/formBuilder/questionCreators/ChoiceQuestionCreator.vue'
-import { Card, useToast } from 'primevue'
+import { Card } from 'primevue'
 import { useFormBuilder } from '@/features/formBuilder/useFormBuilder.ts'
 
 const { questions, copyQuestion, updateQuestion, removeQuestion } = useFormBuilder()
-
 </script>
 
 <template>
@@ -28,9 +27,7 @@ const { questions, copyQuestion, updateQuestion, removeQuestion } = useFormBuild
                         :question="q.value.text"
                         :is-required="q.value.isRequired"
                         :idx="idx"
-                        @choice-question-form-change="
-                            (value) => updateQuestion(idx, value)
-                        "
+                        @choice-question-form-change="(value) => updateQuestion(idx, value)"
                         @copy="copyQuestion(idx)"
                         @remove="removeQuestion(idx)"
                     />

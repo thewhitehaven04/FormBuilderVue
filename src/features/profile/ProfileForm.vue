@@ -30,7 +30,7 @@ const { defineField, handleSubmit, handleReset } = useForm<TChangeMetadataDto>({
 
 const getUserData = async () => {
     const userData = await fetchUserData()
-    const count = (await getFormCount(userData.data.user?.id || ''))
+    const count = await getFormCount(userData.data.user?.id || '')
     return { userData: userData.data, formsCreated: count }
 }
 
@@ -59,7 +59,6 @@ watch(
     },
     { immediate: true },
 )
-
 </script>
 
 <template>
