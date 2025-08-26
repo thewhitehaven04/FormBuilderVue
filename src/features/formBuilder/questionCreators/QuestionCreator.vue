@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { Button, Card, Checkbox, Divider } from 'primevue'
-import { Copy, X } from 'lucide-vue-next'
+import { Button, Panel, Checkbox } from 'primevue'
 
 const { title, isRequired } = defineProps<{ title: string; isRequired: boolean }>()
 defineEmits<{
@@ -15,19 +14,18 @@ defineSlots<{
 </script>
 
 <template>
-    <Card>
-        <template #title>
+    <Panel>
+        <template #header>
             <div class="title-row">
                 <h1>
                     {{ title }}
                 </h1>
-                <Button variant="text" size="small" @click="$emit('remove')">
-                    <X />
-                </Button>
             </div>
         </template>
-        <Divider layout="horizontal" />
-        <template #content>
+        <template #icons>
+            <Button variant="text" size="small" @click="$emit('remove')" icon="pi pi-times" />
+        </template>
+        <template #default>
             <slot name="content" />
         </template>
         <template #footer>
@@ -41,12 +39,10 @@ defineSlots<{
                     />
                     Required
                 </label>
-                <Button type="button" variant="outlined" size="small" @click="$emit('copy')">
-                    <Copy />
-                </Button>
+                <Button type="button" variant="outlined" size="small" @click="$emit('copy')" icon="pi pi-copy"/>
             </div>
         </template>
-    </Card>
+    </Panel>
 </template>
 
 <style scoped>

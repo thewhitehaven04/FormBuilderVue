@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ErrorMessage from '@/components/ErrorMessage.vue'
+import { type TAnswerForm } from '@/features/response/validation'
 import { Textarea, Panel } from 'primevue'
 import { useFormContext } from 'vee-validate'
 
@@ -7,9 +9,9 @@ const props = defineProps<{
     question: string
 }>()
 
-const { defineField } = useFormContext()
+const { defineField } = useFormContext<TAnswerForm>()
 
-const [textAnswer, textAnswerProps] = defineField(`answer[${props.idx}].text`)
+const [textAnswer, textAnswerProps] = defineField(`questions[${props.idx}].answer.text`)
 </script>
 
 <template>
@@ -21,10 +23,17 @@ const [textAnswer, textAnswerProps] = defineField(`answer[${props.idx}].text`)
             <Textarea
                 v-bind="textAnswerProps"
                 v-model="textAnswer"
-                :name="`answer[${props.idx}].text`"
+                :name="`questions[${props.idx}].answer.text`"
+                placeholder="A long, descriptive answer..."
             />
+            <ErrorMessage :fieldName="`questions[${props.idx}].answer.text`" />
         </template>
     </Panel>
 </template>
 
-<style scoped></style>
+<style scoped>
+textarea {
+    resize: vertical;
+    width: 100%;
+}
+</style>

@@ -48,7 +48,7 @@ defineEmits<{
                         class="option-row"
                         :key="option.key"
                     >
-                        <Checkbox v-if="props.type === 'singleChoice'" disabled />
+                        <Checkbox v-if="props.type === 'multipleChoice'" disabled />
                         <RadioButton v-else disabled />
                         <InputText
                             type="text"

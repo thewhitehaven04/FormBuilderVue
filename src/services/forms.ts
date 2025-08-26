@@ -52,43 +52,43 @@ async function createForm(form: IFormCreateRequest) {
 }
 
 async function editForm(formId: number, form: TFormEditRequest) {
-    await supabase
-        .from('forms')
-        .update({
-            title: form.title,
-            description: form.description,
-        })
-        .eq('id', formId)
-        .throwOnError()
-
-    await supabase
-        .from('questions')
-        .insert(
-            form.questions
-                .filter((q) => !q.id)
-                .map((q) => ({
-                    form_id: formId,
-                    is_required: q.isRequired,
-                    question_type: q.type,
-                    text: q.text,
-                })),
-        )
-        .throwOnError()
-
-    await supabase
-        .from('questions')
-        .upsert(
-            form.questions
-                .filter((q) => q.id != null)
-                .map((q) => ({
-                    id: q.id,
-                    form_id: formId,
-                    is_required: q.isRequired,
-                    question_type: q.type,
-                    text: q.text,
-                })),
-        )
-        .throwOnError()
+    await Promise.all([
+        await supabase
+            .from('forms')
+            .update({
+                title: form.title,
+                description: form.description,
+            })
+            .eq('id', formId)
+            .throwOnError(),
+        await supabase
+            .from('questions')
+            .insert(
+                form.questions
+                    .filter((q) => !q.id)
+                    .map((q) => ({
+                        form_id: formId,
+                        is_required: q.isRequired,
+                        question_type: q.type,
+                        text: q.text,
+                    })),
+            )
+            .throwOnError(),
+        await supabase
+            .from('questions')
+            .upsert(
+                form.questions
+                    .filter((q) => q.id != null)
+                    .map((q) => ({
+                        id: q.id,
+                        form_id: formId,
+                        is_required: q.isRequired,
+                        question_type: q.type,
+                        text: q.text,
+                    })),
+            )
+            .throwOnError(),
+    ])
 
     for (const question of form.questions) {
         if (question.id) {
@@ -103,26 +103,27 @@ async function editForm(formId: number, form: TFormEditRequest) {
             const optionsToDelete = existingOptions
                 .filter((opt) => !currentOptions.includes(opt.id))
                 .map((opt) => opt.id)
-            await supabase.from('options').delete().in('id', optionsToDelete).throwOnError()
-
-            await supabase.from('options').insert(
-                question.options
-                    .filter((opt) => !opt.id)
-                    .map((opt) => ({
-                        text: opt.text,
-                        question_id: question.id ?? 0,
-                    })),
-            )
-            await supabase.from('options').upsert(
-                question.options
-                    .filter((opt) => opt.id != null)
-                    .map((opt) => ({
-                        id: opt.id,
-                        question_id: question.id ?? 0,
-                        text: opt.text,
-                    })),
-                { onConflict: 'id' },
-            )
+            await Promise.all([
+                await supabase.from('options').delete().in('id', optionsToDelete).throwOnError(),
+                await supabase.from('options').insert(
+                    question.options
+                        .filter((opt) => !opt.id)
+                        .map((opt) => ({
+                            text: opt.text,
+                            question_id: question.id ?? 0,
+                        })),
+                ),
+                await supabase.from('options').upsert(
+                    question.options
+                        .filter((opt) => opt.id != null)
+                        .map((opt) => ({
+                            id: opt.id,
+                            question_id: question.id ?? 0,
+                            text: opt.text,
+                        })),
+                    { onConflict: 'id' },
+                ),
+            ])
         }
     }
 }

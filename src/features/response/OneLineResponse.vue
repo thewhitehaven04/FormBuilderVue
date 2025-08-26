@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ErrorMessage from '@/components/ErrorMessage.vue'
+import { type TAnswerForm } from '@/features/response/validation'
 import { Panel, InputText } from 'primevue'
 import { useFormContext } from 'vee-validate'
 
@@ -7,9 +9,8 @@ const props = defineProps<{
     question: string
 }>()
 
-const { defineField } = useFormContext()
-
-const [textAnswer, textAnswerProps] = defineField(`answer[${props.idx}].text`)
+const { defineField } = useFormContext<TAnswerForm>()
+const [textAnswer, textAnswerProps] = defineField(`questions[${props.idx}].answer.text`)
 </script>
 
 <template>
@@ -21,10 +22,16 @@ const [textAnswer, textAnswerProps] = defineField(`answer[${props.idx}].text`)
             <InputText
                 v-bind="textAnswerProps"
                 v-model="textAnswer"
-                :name="`answer[${props.idx}].text`"
+                placeholder="Answer"
+                :name="`questions[${props.idx}].answer.text`"
             />
+            <ErrorMessage :fieldName="`questions[${props.idx}].answer.text`" />
         </template>
     </Panel>
 </template>
 
-<style scoped></style>
+<style scoped>
+input {
+    width: 100%;
+}
+</style>

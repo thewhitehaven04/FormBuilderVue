@@ -1,4 +1,4 @@
-type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export type Database = {
     // Allows to automatically instantiate createClient with right options
@@ -31,6 +31,46 @@ export type Database = {
                     title?: string
                 }
                 Relationships: []
+            }
+            option_answers: {
+                Row: {
+                    option_id: number
+                    question_id: number
+                    submission_id: number
+                }
+                Insert: {
+                    option_id: number
+                    question_id: number
+                    submission_id?: number
+                }
+                Update: {
+                    option_id?: number
+                    question_id?: number
+                    submission_id?: number
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: 'option_answers_option_id_fkey'
+                        columns: ['option_id']
+                        isOneToOne: false
+                        referencedRelation: 'options'
+                        referencedColumns: ['id']
+                    },
+                    {
+                        foreignKeyName: 'option_answers_question_id_fkey'
+                        columns: ['question_id']
+                        isOneToOne: false
+                        referencedRelation: 'questions'
+                        referencedColumns: ['id']
+                    },
+                    {
+                        foreignKeyName: 'option_answers_submission_id_fkey'
+                        columns: ['submission_id']
+                        isOneToOne: true
+                        referencedRelation: 'submissions'
+                        referencedColumns: ['id']
+                    },
+                ]
             }
             options: {
                 Row: {
@@ -101,7 +141,7 @@ export type Database = {
                     created_at?: string
                     form_id: number
                     id?: number
-                    submitted_by: string
+                    submitted_by?: string
                 }
                 Update: {
                     created_at?: string

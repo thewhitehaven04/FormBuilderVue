@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { RadioButtonGroup, RadioButton, Panel } from 'primevue'
+import { RadioButton, Panel, Fieldset } from 'primevue'
 import type { IOption } from '@/features/formBuilder/useFormBuilder.ts'
 import { useFormContext } from 'vee-validate'
-import type { IAnswerForm } from '@/features/response/types.ts'
+import type { TAnswerForm } from '@/features/response/validation'
+import ErrorMessage from '@/components/ErrorMessage.vue'
 
 const props = defineProps<{
     idx: number
@@ -10,8 +11,9 @@ const props = defineProps<{
     options: IOption[]
 }>()
 
-const { defineField } = useFormContext<IAnswerForm>()
-const [radio, radioProps] = defineField(`answers[${props.idx}].answer.optionId`)
+const { defineField } = useFormContext<TAnswerForm>()
+const [answer, answerProps] = defineField(`questions[${props.idx}].answer.option`)
+
 </script>
 
 <template>
@@ -19,12 +21,13 @@ const [radio, radioProps] = defineField(`answers[${props.idx}].answer.optionId`)
         <template #header>
             {{ question }}
         </template>
-        <RadioButtonGroup class="option-group">
+        <Fieldset class="radio-group">
             <label v-for="option in options" :key="option.id">
-                <RadioButton v-model="radio" v-bind="radioProps" :value="option.id" />
+                <RadioButton v-bind="answerProps" v-model="answer" :value="option.id" />
                 {{ option.text }}
             </label>
-        </RadioButtonGroup>
+        </Fieldset>
+        <ErrorMessage :fieldName="`questions[${props.idx}].answer.options`" />
     </Panel>
 </template>
 
@@ -36,7 +39,7 @@ const [radio, radioProps] = defineField(`answers[${props.idx}].answer.optionId`)
     gap: 16px;
 }
 
-.option-group {
+.radio-group {
     display: flex;
     flex-direction: column;
     gap: 8px;

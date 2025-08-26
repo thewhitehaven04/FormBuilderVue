@@ -46,7 +46,6 @@ const onSubmit = handleSubmit(async (data) => {
         }, 3000)
     }
 })
-
 </script>
 
 <template>
@@ -68,8 +67,8 @@ const onSubmit = handleSubmit(async (data) => {
         <form id="form" @submit="onSubmit" @reset="handleReset()">
             <div class="input-container">
                 <IconField>
-                    <InputIcon >
-                       <User />
+                    <InputIcon>
+                        <User />
                     </InputIcon>
                     <InputText
                         type="text"
@@ -85,12 +84,12 @@ const onSubmit = handleSubmit(async (data) => {
                     severity="error"
                     variant="simple"
                     size="small"
-                    >{{ errors.name }}}
+                    >{{ errors.name }}
                 </Message>
             </div>
             <div class="input-container">
                 <IconField>
-                    <InputIcon >
+                    <InputIcon>
                         <User />
                     </InputIcon>
                     <InputText
@@ -107,13 +106,13 @@ const onSubmit = handleSubmit(async (data) => {
                     severity="error"
                     variant="simple"
                     size="small"
-                    >{{ errors.lastName }}}
+                    >{{ errors.lastName }}
                 </Message>
             </div>
             <div class="input-container">
                 <IconField>
-                    <InputIcon >
-                       <LucideMail />
+                    <InputIcon>
+                        <LucideMail />
                     </InputIcon>
                     <InputText
                         type="email"
@@ -129,13 +128,13 @@ const onSubmit = handleSubmit(async (data) => {
                     severity="error"
                     variant="simple"
                     size="small"
-                    >{{ errors.email }}}
+                    >{{ errors.email }}
                 </Message>
             </div>
 
             <div class="input-container">
                 <IconField>
-                    <InputIcon >
+                    <InputIcon>
                         <KeyRound />
                     </InputIcon>
                     <InputText
@@ -152,13 +151,13 @@ const onSubmit = handleSubmit(async (data) => {
                     severity="error"
                     variant="simple"
                     size="small"
-                    >{{ errors.password }}}
+                    >{{ errors.password }}
                 </Message>
             </div>
 
             <div class="input-container">
                 <IconField>
-                    <InputIcon >
+                    <InputIcon>
                         <KeyRound />
                     </InputIcon>
                     <InputText
@@ -175,7 +174,7 @@ const onSubmit = handleSubmit(async (data) => {
                     severity="error"
                     variant="simple"
                     size="small"
-                    >{{ errors.confirm }}}
+                    >{{ errors.confirm }}
                 </Message>
             </div>
             <Button type="submit">Sign up</Button>

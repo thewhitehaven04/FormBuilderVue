@@ -131,7 +131,7 @@ export const getFormProvider = (formId?: number) => {
                     description: values.description || '',
                     questions: values.questions,
                 })
-                deleteQuestions(deletedQuestionIds.value)
+                await deleteQuestions(deletedQuestionIds.value)
             }
             onSuccess()
         } catch {
