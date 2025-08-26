@@ -9,7 +9,6 @@ const { value, handleBlur, handleReset, handleChange } = useField<string>(() => 
 
 <template>
     <InputText
-        v-bind="$props"
         v-model="value"
         @blur="handleBlur"
         @reset="handleReset"

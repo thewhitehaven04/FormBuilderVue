@@ -11,7 +11,7 @@ const props = defineProps<{
     options: IOption[]
 }>()
 
-const { defineField } = useFormContext<TAnswerForm>()
+const { defineField, errors, submitCount } = useFormContext<TAnswerForm>()
 const [check, checkProps] = defineField(`questions[${props.idx}].answer.options`)
 </script>
 
@@ -20,20 +20,27 @@ const [check, checkProps] = defineField(`questions[${props.idx}].answer.options`
         <template #header>
             {{ question }}
         </template>
-        <Fieldset>
-            <label v-for="option in options" :key="option.id">
-                <Checkbox v-bind="checkProps" :value="option.id" v-model="check" />
-                {{ option.text }}
-            </label>
+        <Fieldset legend="Answers">
+            <div class="option-group">
+                <label v-for="option in options" :key="option.id">
+                    <Checkbox
+                        v-bind="checkProps"
+                        :value="option.id"
+                        v-model="check"
+                        :invalid="!!errors[`questions[${props.idx}]`] && submitCount > 0"
+                    />
+                    {{ option.text }}
+                </label>
+            </div>
         </Fieldset>
-        <ErrorMessage :fieldName="`questions[${props.idx}].answer.options`" />
+        <ErrorMessage :fieldName="`questions[${props.idx}]`" />
     </Panel>
 </template>
 
-<style module>
+<style scoped>
 .option-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 16px;
 }
 </style>

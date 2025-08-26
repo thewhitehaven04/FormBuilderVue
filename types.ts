@@ -66,7 +66,7 @@ export type Database = {
                     {
                         foreignKeyName: 'option_answers_submission_id_fkey'
                         columns: ['submission_id']
-                        isOneToOne: true
+                        isOneToOne: false
                         referencedRelation: 'submissions'
                         referencedColumns: ['id']
                     },

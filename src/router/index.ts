@@ -8,8 +8,8 @@ import NotFoundView from '@/views/NotFoundView.vue'
 import FormBuilder from '@/views/FormBuilder.vue'
 import HomeView from '@/views/HomeView.vue'
 import FormEditor from '@/views/FormEditor.vue'
-import FormResponse from '@/views/FormResponse.vue'
 import FormResponses from '@/views/FormResponses.vue'
+import FormResponseWrapper from '@/views/FormResponseWrapper.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,7 +36,7 @@ const router = createRouter({
                 },
                 {
                     path: 'respond/:id',
-                    component: FormResponse,
+                    component: FormResponseWrapper,
                 },
                 {
                     path: '/form/:id/answers',

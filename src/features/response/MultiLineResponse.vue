@@ -9,7 +9,7 @@ const props = defineProps<{
     question: string
 }>()
 
-const { defineField } = useFormContext<TAnswerForm>()
+const { defineField, errors, submitCount } = useFormContext<TAnswerForm>()
 
 const [textAnswer, textAnswerProps] = defineField(`questions[${props.idx}].answer.text`)
 </script>
@@ -25,6 +25,7 @@ const [textAnswer, textAnswerProps] = defineField(`questions[${props.idx}].answe
                 v-model="textAnswer"
                 :name="`questions[${props.idx}].answer.text`"
                 placeholder="A long, descriptive answer..."
+                :invalid="!!errors[`questions[${props.idx}]`] && submitCount > 0"
             />
             <ErrorMessage :fieldName="`questions[${props.idx}].answer.text`" />
         </template>

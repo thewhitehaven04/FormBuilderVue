@@ -9,7 +9,7 @@ const props = defineProps<{
     question: string
 }>()
 
-const { defineField } = useFormContext<TAnswerForm>()
+const { defineField, errors, submitCount } = useFormContext<TAnswerForm>()
 const [textAnswer, textAnswerProps] = defineField(`questions[${props.idx}].answer.text`)
 </script>
 
@@ -24,6 +24,7 @@ const [textAnswer, textAnswerProps] = defineField(`questions[${props.idx}].answe
                 v-model="textAnswer"
                 placeholder="Answer"
                 :name="`questions[${props.idx}].answer.text`"
+                :invalid="!!errors[`questions[${props.idx}].answer.text`] && submitCount > 0"
             />
             <ErrorMessage :fieldName="`questions[${props.idx}].answer.text`" />
         </template>

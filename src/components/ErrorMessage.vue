@@ -11,7 +11,23 @@ const showError = computed(() => !!errors.value[props.fieldName] && submitCount.
 </script>
 
 <template>
-    <Message v-show="showError" severity="error" :name="props.fieldName">{{
-        errors[props.fieldName]
-    }}</Message>
+    <div class="wrapper">
+        <Message
+            v-if="showError"
+            size="small"
+            variant="simple"
+            severity="error"
+            :name="props.fieldName"
+            >{{ errors[props.fieldName] }}</Message
+        >
+    </div>
 </template>
+
+<style scoped>
+.wrapper {
+    height: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+</style>

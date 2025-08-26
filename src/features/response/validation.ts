@@ -6,7 +6,7 @@ const oneLineType = z.object({
     isRequired: z.boolean(),
     questionId: z.number(),
     answer: z.object({
-        text: z.string().nullable(),
+        text: z.string().min(1, 'Answer field must not be empty').or(z.null()),
     }),
 })
 
@@ -15,7 +15,7 @@ const multiLineType = z.object({
     isRequired: z.boolean(),
     questionId: z.number(),
     answer: z.object({
-        text: z.string().nullable(),
+        text: z.string().min(60, 'Give a detailed answer (at least 60 characters)').or(z.null()),
     }),
 })
 const singleChoice = z.object({
@@ -39,15 +39,19 @@ const schema = z.object({
     questions: z.array(
         z
             .discriminatedUnion('type', [oneLineType, multiLineType, singleChoice, multipleChoice])
-            .refine(({ type, answer }) => {
-                if (type === 'singleChoice') {
-                    return answer.option != undefined
-                } else if (type === 'multipleChoice') {
-                    return answer.options.length > 0
+            .refine(({ type, answer, isRequired }) => {
+                if (isRequired) {
+                    if (type === 'singleChoice') {
+                        return answer.option != undefined
+                    } else if (type === 'multipleChoice') {
+                        return answer.options.length > 0
+                    } else {
+                        return !!answer.text && answer.text.length > 0
+                    }
                 } else {
-                    return answer.text.length > 0
+                    return true
                 }
-            }, 'Answer all required questions'),
+            }, 'This question is required'),
     ),
 })
 

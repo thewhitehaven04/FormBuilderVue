@@ -1,9 +1,6 @@
 import { supabase } from '@/services/supabase.ts'
 import { useUserStore } from '@/stores/user.ts'
 import type { TChangePasswordFormDto } from '@/features/profile/ChangePasswordForm.vue'
-import type { User } from '@supabase/supabase-js'
-
-const LS_USER_KEY = 'sb-louvwylhdehsenaidave-auth-token' as const
 
 export type TSignupRequestDto = {
     email: string

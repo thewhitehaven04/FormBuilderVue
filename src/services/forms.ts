@@ -1,4 +1,5 @@
 import type { TQuestion } from '@/features/formBuilder/useFormBuilder.ts'
+import { fetchUserData } from '@/services/auth'
 import { supabase } from '@/services/supabase.ts'
 
 export interface IFormCreateRequest {
@@ -168,11 +169,22 @@ async function fetchForm(id: number) {
     return (
         await supabase
             .from('forms')
-            .select('*, questions(*, options(*))')
+            .select('*, questions(*, options(*)), submissions(*)')
             .eq('id', id)
             .single()
             .throwOnError()
     ).data
+}
+
+async function getFormSubmissions(formId: number) {
+    const { data } = await fetchUserData()
+    return await supabase
+        .from('submissions')
+        .select('*')
+        .eq('form_id', formId)
+        .eq('submitted_by', data.user?.id || '')
+        .select('*')
+        .throwOnError()
 }
 
 async function deleteForm(id: number[]) {
@@ -200,4 +212,5 @@ export {
     deleteOptions,
     deleteQuestions,
     getFormCount,
+    getFormSubmissions
 }

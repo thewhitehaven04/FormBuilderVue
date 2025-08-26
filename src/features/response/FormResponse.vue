@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useFetcher } from '@/services/useFetcher.ts'
 import { fetchForm } from '@/services/forms.ts'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { watch } from 'vue'
 import { useForm } from 'vee-validate'
 import { typedSchema, type TAnswerForm } from '@/features/response/validation'
@@ -10,20 +10,21 @@ import OneLineResponse from '@/features/response/OneLineResponse.vue'
 import MultiLineResponse from '@/features/response/MultiLineResponse.vue'
 import SingleChoiceResponse from '@/features/response/SingleChoiceResponse.vue'
 import MultipleChoiceResponse from '@/features/response/MultipleChoiceResponse.vue'
-import { Card, Button } from 'primevue'
+import { Card, Button, useToast } from 'primevue'
+import { submitResponse } from '@/services/submissions'
 
-const { params } = useRoute()
-const paramsId = Number.parseInt(typeof params.id === 'string' ? params.id : '0')
-
-const { data, query, isPending } = useFetcher(async () => await fetchForm(paramsId))
+const { formId } = defineProps<{ formId: number }>()
+const { data, query } = useFetcher(async () => await fetchForm(formId))
+const router = useRouter()
+const toast = useToast()
 
 watch(
-    () => params.id,
+    () => formId,
     () => query(),
     { immediate: true },
 )
 
-const { handleSubmit, setValues, errors, submitCount, values } = useForm<TAnswerForm>({
+const { handleSubmit, setValues, isSubmitting } = useForm<TAnswerForm>({
     validationSchema: typedSchema,
 })
 
@@ -54,7 +55,15 @@ watch(
 )
 
 const onSubmit = handleSubmit(async (data) => {
-    console.log(data)
+    try {
+        await submitResponse({ formId, ...data })
+        router.push('/')
+    } catch {
+        toast.add({
+            severity: 'error',
+            summary: 'Unable to submit the form. Try again later',
+        })
+    }
 })
 </script>
 
@@ -98,7 +107,12 @@ const onSubmit = handleSubmit(async (data) => {
             </form>
         </template>
         <template #footer>
-            <Button type="submit" form="response-form">Submit</Button>
+            <Button
+                type="submit"
+                form="response-form"
+                :label="!isSubmitting ? 'Submit' : undefined"
+                :icon="isSubmitting ? 'pi pi-spinner-dotted' : undefined"
+            />
         </template>
     </Card>
 </template>
@@ -112,5 +126,8 @@ ul {
 
 .card {
     width: 100%;
+}
+button {
+    min-width: 96px;
 }
 </style>

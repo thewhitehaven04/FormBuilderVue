@@ -11,9 +11,8 @@ const props = defineProps<{
     options: IOption[]
 }>()
 
-const { defineField } = useFormContext<TAnswerForm>()
+const { defineField, errors, submitCount } = useFormContext<TAnswerForm>()
 const [answer, answerProps] = defineField(`questions[${props.idx}].answer.option`)
-
 </script>
 
 <template>
@@ -21,13 +20,20 @@ const [answer, answerProps] = defineField(`questions[${props.idx}].answer.option
         <template #header>
             {{ question }}
         </template>
-        <Fieldset class="radio-group">
-            <label v-for="option in options" :key="option.id">
-                <RadioButton v-bind="answerProps" v-model="answer" :value="option.id" />
-                {{ option.text }}
-            </label>
+        <Fieldset legend="Answers">
+            <div class="radio-group">
+                <label v-for="option in options" :key="option.id">
+                    <RadioButton
+                        :invalid="!!errors[`questions[${props.idx}]`] && submitCount > 0"
+                        v-bind="answerProps"
+                        v-model="answer"
+                        :value="option.id"
+                    />
+                    {{ option.text }}
+                </label>
+            </div>
         </Fieldset>
-        <ErrorMessage :fieldName="`questions[${props.idx}].answer.options`" />
+        <ErrorMessage :fieldName="`questions[${props.idx}]`" />
     </Panel>
 </template>
 

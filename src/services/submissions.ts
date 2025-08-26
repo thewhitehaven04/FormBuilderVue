@@ -14,25 +14,31 @@ async function submitResponse({ formId, questions }: TAnswerForm & { formId: num
     ).data
 
     await Promise.all([
-        supabase.from('text_answers').insert(
-            questions
-                .filter((q) => q.type === 'multiLine' || q.type === 'oneLine')
-                .map((q) => ({
-                    question_id: q.questionId,
-                    submission_id: submission.id,
-                    text: q.answer.text,
-                })),
-        ),
-        supabase.from('option_answers').insert(
-            questions
-                .filter((q) => q.type === 'singleChoice')
-                .map((q) => ({
-                    question_id: q.questionId,
-                    submission_id: submission.id,
-                    option_id: q.answer.option,
-                })),
-        ),
-        supabase
+        await supabase
+            .from('text_answers')
+            .insert(
+                questions
+                    .filter((q) => q.type === 'multiLine' || q.type === 'oneLine')
+                    .map((q) => ({
+                        question_id: q.questionId,
+                        submission_id: submission.id,
+                        text: q.answer.text as string,
+                    })),
+            )
+            .throwOnError(),
+        await supabase
+            .from('option_answers')
+            .insert(
+                questions
+                    .filter((q) => q.type === 'singleChoice')
+                    .map((q) => ({
+                        question_id: q.questionId,
+                        submission_id: submission.id,
+                        option_id: q.answer.option as number,
+                    })),
+            )
+            .throwOnError(),
+        await supabase
             .from('option_answers')
             .insert(
                 questions
