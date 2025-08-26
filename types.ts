@@ -151,9 +151,9 @@ export type Database = {
                 }
                 Relationships: [
                     {
-                        foreignKeyName: 'submissions_id_fkey'
-                        columns: ['id']
-                        isOneToOne: true
+                        foreignKeyName: 'submissions_form_id_fkey'
+                        columns: ['form_id']
+                        isOneToOne: false
                         referencedRelation: 'forms'
                         referencedColumns: ['id']
                     },
