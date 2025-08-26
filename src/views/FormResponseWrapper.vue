@@ -4,6 +4,8 @@ import { useFetcher } from '@/services/useFetcher'
 import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import FormResponse from '@/features/response/FormResponse.vue'
+import { Button } from 'primevue'
+
 const { params } = useRoute()
 const formId = Number.parseInt(typeof params.id === 'string' ? params.id : '0')
 
@@ -15,13 +17,28 @@ watch(
     { immediate: true },
 )
 
-const hasSubmissions = computed(() => (data?.value?.count ?? 0) > 0)
+const hasSubmissions = computed(() => (data?.value?.data.length ?? 0) > 0)
 </script>
 
 <template>
     <div v-if="hasSubmissions">
-        <p>You have already submitted a response to this form</p>
-        <RouterLink to="/">Go back</RouterLink>
+        <p>You have already submitted a response to this form.</p>
+        <RouterLink to="/">
+            <Button variant="text" size="large">Go back</Button>
+        </RouterLink>
     </div>
-    <FormResponse :form-id="formId" />
+    <FormResponse v-else :form-id="formId" />
 </template>
+
+<style scoped>
+div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+p {
+    font-size: 18pt;
+}
+</style>
