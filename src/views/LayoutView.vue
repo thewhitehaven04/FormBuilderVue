@@ -51,7 +51,7 @@ main {
 .container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     width: 100%;
     max-width: 1440px;
     padding-bottom: 2px;

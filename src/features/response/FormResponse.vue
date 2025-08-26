@@ -68,53 +68,55 @@ const onSubmit = handleSubmit(async (data) => {
 </script>
 
 <template>
-    <Card class="card">
-        <template #title>
-            {{ data?.title }}
-        </template>
-        <template #subtitle>
-            <p>{{ data?.description }}</p>
-        </template>
-        <template #content>
-            <form id="response-form" @submit="onSubmit" @submit.prevent>
-                <ul>
-                    <LoaderCircle v-if="!data" />
-                    <li v-else v-for="(question, idx) in data.questions" :key="question.id">
-                        <OneLineResponse
-                            :idx="idx"
-                            v-if="question.question_type === 'oneLine'"
-                            :question="question.text"
-                        />
-                        <MultiLineResponse
-                            :idx="idx"
-                            v-else-if="question.question_type === 'multiLine'"
-                            :question="question.text"
-                        />
-                        <SingleChoiceResponse
-                            :idx="idx"
-                            v-else-if="question.question_type === 'singleChoice'"
-                            :question="question.text"
-                            :options="question.options"
-                        />
-                        <MultipleChoiceResponse
-                            :idx="idx"
-                            v-else-if="question.question_type === 'multipleChoice'"
-                            :question="question.text"
-                            :options="question.options"
-                        />
-                    </li>
-                </ul>
-            </form>
-        </template>
-        <template #footer>
-            <Button
-                type="submit"
-                form="response-form"
-                :label="!isSubmitting ? 'Submit' : undefined"
-                :icon="isSubmitting ? 'pi pi-spinner-dotted' : undefined"
-            />
-        </template>
-    </Card>
+    <div class="content">
+        <Card class="card">
+            <template #title>
+                {{ data?.title }}
+            </template>
+            <template #subtitle>
+                <p>{{ data?.description }}</p>
+            </template>
+            <template #content>
+                <form id="response-form" @submit="onSubmit" @submit.prevent>
+                    <ul>
+                        <LoaderCircle v-if="!data" />
+                        <li v-else v-for="(question, idx) in data.questions" :key="question.id">
+                            <OneLineResponse
+                                :idx="idx"
+                                v-if="question.question_type === 'oneLine'"
+                                :question="question.text"
+                            />
+                            <MultiLineResponse
+                                :idx="idx"
+                                v-else-if="question.question_type === 'multiLine'"
+                                :question="question.text"
+                            />
+                            <SingleChoiceResponse
+                                :idx="idx"
+                                v-else-if="question.question_type === 'singleChoice'"
+                                :question="question.text"
+                                :options="question.options"
+                            />
+                            <MultipleChoiceResponse
+                                :idx="idx"
+                                v-else-if="question.question_type === 'multipleChoice'"
+                                :question="question.text"
+                                :options="question.options"
+                            />
+                        </li>
+                    </ul>
+                </form>
+            </template>
+            <template #footer>
+                <Button
+                    type="submit"
+                    form="response-form"
+                    :label="!isSubmitting ? 'Submit' : undefined"
+                    :icon="isSubmitting ? 'pi pi-spinner-dotted' : undefined"
+                />
+            </template>
+        </Card>
+    </div>
 </template>
 
 <style scoped>
@@ -122,12 +124,18 @@ ul {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    width: 100%;
+    align-items: stretch;
 }
 
-.card {
-    width: 100%;
-}
 button {
     min-width: 96px;
+}
+
+.content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 </style>
