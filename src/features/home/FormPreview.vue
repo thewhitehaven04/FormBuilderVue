@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Card, Divider, Button } from 'primevue'
+import { Panel, Divider, Button } from 'primevue'
 import { RouterLink } from 'vue-router'
 
 const { id, title, description, responseCount } = defineProps<{
@@ -15,12 +15,12 @@ defineEmits<{
 </script>
 
 <template>
-    <Card>
-        <template #title>
-            <h2>{{ title }}</h2>
-        </template>
-        <template #content>
-            <p>{{ description }}</p>
+    <Panel>
+        <template #header>
+            <div class="header">
+                <h2>{{ title }}</h2>
+                <p>{{ description }}</p>
+            </div>
         </template>
         <template #footer>
             <div class="actions">
@@ -41,7 +41,7 @@ defineEmits<{
                 <Button variant="text" size="large" @click="$emit('remove')" icon="pi pi-trash" />
             </div>
         </template>
-    </Card>
+    </Panel>
 </template>
 
 <style scoped>
@@ -50,13 +50,20 @@ h2 {
     font-size: 16pt;
 }
 
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
 .actions {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
 }
-.actions > a, .actions > button {
+.actions > a,
+.actions > button {
     width: 100%;
 }
 </style>

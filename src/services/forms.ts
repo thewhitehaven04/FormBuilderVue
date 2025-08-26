@@ -26,7 +26,6 @@ async function createForm(form: IFormCreateRequest) {
         .from('questions')
         .insert(
             form.questions
-                .filter((q) => q.type === 'oneLine' || q.type === 'multiLine')
                 .map((q) => ({
                     text: q.text,
                     is_required: q.isRequired,
@@ -146,7 +145,7 @@ async function fetchForms({
                 .from('forms')
                 .select('*, questions(*)')
                 .order('created_at', {
-                    ascending: false,
+                    ascending: isAscending,
                 })
                 .range(skip, skip + count)
                 .throwOnError()
@@ -169,7 +168,7 @@ async function fetchForm(id: number) {
     return (
         await supabase
             .from('forms')
-            .select('*, questions(*, options(*)), submissions(*)')
+            .select('*, questions(*, options!options_question_id_fkey(*))')
             .eq('id', id)
             .single()
             .throwOnError()

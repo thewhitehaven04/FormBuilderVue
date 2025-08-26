@@ -14,7 +14,7 @@ const [textAnswer, textAnswerProps] = defineField(`questions[${props.idx}].answe
 </script>
 
 <template>
-    <Panel>
+    <Panel class="panel">
         <template #header>
             {{ question }}
         </template>

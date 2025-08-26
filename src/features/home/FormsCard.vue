@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Card, InputText, Select, IconField } from 'primevue'
+import { Card, InputText, Select, IconField, InputIcon } from 'primevue'
 import { ref, watch } from 'vue'
 import { Loader } from 'lucide-vue-next'
 import { useFetcher } from '@/services/useFetcher.ts'
@@ -8,7 +8,7 @@ import FormPreview from '@/features/home/FormPreview.vue'
 
 const options = [
     { label: 'Newest first', value: false },
-    { label: 'Oldest first', value: false },
+    { label: 'Oldest first', value: true },
 ]
 const searchQuery = ref(null)
 const activeOptions = ref(options[1].value)
@@ -26,7 +26,7 @@ const { data, query, isPending } = useFetcher(
 watch([searchQuery, activeOptions], () => query(), { immediate: true })
 
 const handleRemove = (formId: number) => {
-    deleteForm(formId)
+    deleteForm([formId])
     query()
 }
 </script>
@@ -36,8 +36,8 @@ const handleRemove = (formId: number) => {
         <template #title>
             <div class="title">
                 <IconField>
-                    <InputIcon icon="pi" />
-                    <InputText type="text" v-model="searchQuery" placeholder="Search" />
+                    <InputIcon class="pi pi-search" />
+                    <InputText type="text" v-model="searchQuery" placeholder="Search"/>
                 </IconField>
                 <Select
                     :options="options"
