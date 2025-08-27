@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Panel, Divider, Button } from 'primevue'
+import { Panel, InputIcon, Button, OverlayBadge } from 'primevue'
 import { RouterLink } from 'vue-router'
 
 const { id, title, description, responseCount } = defineProps<{
@@ -24,21 +24,23 @@ defineEmits<{
         </template>
         <template #footer>
             <div class="actions">
-                <RouterLink :to="`/form/${id}/answers`">
-                    <Button
-                        variant="text"
-                        size="large"
-                        badge-severity="danger"
-                        :badge="responseCount.toString()"
-                        icon="pi pi-comments"
-                    />
-                </RouterLink>
-                <Divider layout="vertical" />
-                <RouterLink :to="`form/${id}`">
-                    <Button variant="text" size="large" icon="pi pi-pencil" />
-                </RouterLink>
-                <Divider layout="vertical" />
-                <Button variant="text" size="large" @click="$emit('remove')" icon="pi pi-trash" />
+                <Button size="small" v-slot="props" as-child>
+                    <RouterLink :to="`/form/${id}/answers`">
+                        <OverlayBadge
+                            :value="responseCount.toString()"
+                            severity="danger"
+                            size="small"
+                        >
+                            <InputIcon class="pi pi-comments" :class="props.class" />
+                        </OverlayBadge>
+                    </RouterLink>
+                </Button>
+                <Button size="small" v-slot="props" as-child>
+                    <RouterLink :to="`form/${id}`">
+                        <InputIcon class="pi pi-pencil" :class="props.class" />
+                    </RouterLink>
+                </Button>
+                <Button size="small" @click="$emit('remove')" icon="pi pi-trash"/>
             </div>
         </template>
     </Panel>
@@ -59,11 +61,14 @@ h2 {
 .actions {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 16px;
 }
-.actions > a,
-.actions > button {
-    width: 100%;
+
+a {
+    display: block;
+    height: 100%;
 }
+
 </style>

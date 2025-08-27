@@ -14,6 +14,7 @@ export type Database = {
                     created_by: string
                     description: string | null
                     id: number
+                    timer: number | null
                     title: string
                 }
                 Insert: {
@@ -21,6 +22,7 @@ export type Database = {
                     created_by?: string
                     description?: string | null
                     id?: number
+                    timer?: number | null
                     title: string
                 }
                 Update: {
@@ -28,6 +30,7 @@ export type Database = {
                     created_by?: string
                     description?: string | null
                     id?: number
+                    timer?: number | null
                     title?: string
                 }
                 Relationships: []

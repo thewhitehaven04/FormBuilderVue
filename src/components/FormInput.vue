@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { InputText } from 'primevue'
 import { useField } from 'vee-validate'
-import type { InputTextProps } from 'primevue'
 
-const props = defineProps<InputTextProps>()
+const props = defineProps<{ name: string }>()
 
 const { value, handleBlur, handleReset, handleChange } = useField<string>(() => props.name || '')
 </script>
@@ -15,5 +15,3 @@ const { value, handleBlur, handleReset, handleChange } = useField<string>(() => 
         @change="handleChange"
     />
 </template>
-
-<style scoped></style>

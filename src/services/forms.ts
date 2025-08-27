@@ -6,6 +6,7 @@ export interface IFormCreateRequest {
     title: string
     description: string
     questions: TQuestion[]
+    timer: number | null
 }
 
 type TFormEditRequest = IFormCreateRequest
@@ -17,6 +18,7 @@ async function createForm(form: IFormCreateRequest) {
         .insert({
             title: form.title,
             description: form.description,
+            timer: form.timer ?? null
         })
         .select('*')
         .single()
@@ -143,7 +145,7 @@ async function fetchForms({
         return (
             await supabase
                 .from('forms')
-                .select('*, questions(*)')
+                .select('*, questions(*), submissions(count)')
                 .order('created_at', {
                     ascending: isAscending,
                 })
@@ -154,7 +156,7 @@ async function fetchForms({
     return (
         await supabase
             .from('forms')
-            .select('*, questions(*)')
+            .select('*, questions(*), submissions(count)')
             .order('created_at', {
                 ascending: isAscending,
             })

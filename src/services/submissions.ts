@@ -55,4 +55,20 @@ async function submitResponse({ formId, questions }: TAnswerForm & { formId: num
     ])
 }
 
-export { submitResponse }
+async function fetchFormSubmissions(
+    formId: number,
+    props: { skip: number; count: number } = { skip: 0, count: 10 },
+) {
+    return (
+        await supabase
+            .from('submissions')
+            .select('*, text_answers(*, questions(*)), option_answers(*, questions(*))', {
+                count: 'exact',
+            })
+            .eq('form_id', formId)
+            .range(props.skip, props.count + props.skip)
+            .throwOnError()
+    ).data
+}
+
+export { submitResponse, fetchFormSubmissions }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Card, Tabs, TabList, Tab, TabPanels, TabPanel } from 'primevue'
 import ActionsForm from '@/features/formBuilder/ActionsForm.vue'
+import PreferencesForm from '@/features/formBuilder/PreferencesForm.vue'
 
 const { type } = defineProps<{
     type: 'create' | 'edit'
@@ -21,7 +22,7 @@ const { type } = defineProps<{
                             <ActionsForm :type="type" />
                         </TabPanel>
                         <TabPanel value="preferences">
-                            <div>Hello world</div>
+                            <PreferencesForm />
                         </TabPanel>
                     </TabPanels>
                 </Tabs>
@@ -40,5 +41,4 @@ const { type } = defineProps<{
     position: sticky;
     top: 50px;
 }
-
 </style>

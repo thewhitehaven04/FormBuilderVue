@@ -45,6 +45,7 @@ export interface IForm {
     title: string | null
     description: string | null
     questions: TQuestion[]
+    timer: number | null
 }
 
 const schema = z.object({
@@ -55,6 +56,7 @@ const schema = z.object({
             title: z.string().min(8),
         }),
     ),
+    timer: z.number().nullable()
 })
 
 const validationSchema = toTypedSchema(schema)
@@ -62,6 +64,12 @@ const validationSchema = toTypedSchema(schema)
 export const getFormProvider = (formId?: number) => {
     const { values, setFieldValue, setValues } = useForm<IForm>({
         validationSchema,
+        initialValues: {
+            title: null,
+            description: null,
+            questions: [],
+            timer: null
+        }
     })
     const deletedQuestionIds = ref<number[]>([])
     const questions = useFieldArray<IForm['questions'][number]>('questions')
@@ -86,6 +94,7 @@ export const getFormProvider = (formId?: number) => {
                     title: values.title,
                     description: values.description,
                     questions: values.questions,
+                    timer: values.timer,
                 })
                 onSuccess()
             } catch {
@@ -101,6 +110,7 @@ export const getFormProvider = (formId?: number) => {
             title: null,
             description: null,
             questions: [],
+            timer: null
         })
     }
 
@@ -130,6 +140,7 @@ export const getFormProvider = (formId?: number) => {
                     title: values.title || '',
                     description: values.description || '',
                     questions: values.questions,
+                    timer: values.timer
                 })
                 await deleteQuestions(deletedQuestionIds.value)
             }
@@ -142,6 +153,7 @@ export const getFormProvider = (formId?: number) => {
     return {
         title: values.title,
         description: values.description,
+        timer: values.timer,
         questions: questions.fields,
         addQuestion,
         updateQuestion,

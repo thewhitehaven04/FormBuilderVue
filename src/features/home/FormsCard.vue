@@ -17,7 +17,7 @@ const { data, query, isPending } = useFetcher(
     async () =>
         await fetchForms({
             skip: 0,
-            count: 3,
+            count: 10,
             text: searchQuery.value,
             isAscending: activeOptions.value,
         }),
@@ -29,6 +29,7 @@ const handleRemove = (formId: number) => {
     deleteForm([formId])
     query()
 }
+
 </script>
 
 <template>
@@ -58,7 +59,7 @@ const handleRemove = (formId: number) => {
                         :title="form.title"
                         :description="form.description"
                         :id="form.id"
-                        :response-count="1"
+                        :response-count="form.submissions[0].count"
                         @remove="handleRemove(form.id)"
                     />
                 </div>
@@ -89,7 +90,7 @@ const handleRemove = (formId: number) => {
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 16px;
     width: 100%;
     height: 100%;

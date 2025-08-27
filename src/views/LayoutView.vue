@@ -60,7 +60,7 @@ main {
 
 .button-wrapper {
     position: sticky;
-    top: 0px;
+    top: 8px;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;

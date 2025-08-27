@@ -23,9 +23,9 @@ const hasSubmissions = computed(() => (data?.value?.data.length ?? 0) > 0)
 <template>
     <div v-if="hasSubmissions">
         <p>You have already submitted a response to this form.</p>
-        <RouterLink to="/">
-            <Button variant="text" size="large">Go back</Button>
-        </RouterLink>
+        <Button as-child>
+            <RouterLink to="/">Go back</RouterLink>
+        </Button>
     </div>
     <FormResponse v-else :form-id="formId" />
 </template>
