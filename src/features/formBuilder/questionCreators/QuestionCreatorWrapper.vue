@@ -2,14 +2,13 @@
 import { Button, Panel, Checkbox } from 'primevue'
 
 const { title, isRequired } = defineProps<{ title: string; isRequired: boolean }>()
+
 defineEmits<{
     (e: 'copy'): void
     (e: 'remove'): void
     (e: 'required-change', value: boolean): void
-}>()
-
-defineSlots<{
-    content(): never
+    (e: 'go-up-the-order'): void
+    (e: 'go-down-the-order'): void
 }>()
 </script>
 
@@ -23,13 +22,32 @@ defineSlots<{
             </div>
         </template>
         <template #icons>
+            <Button
+                variant="text"
+                size="small"
+                @click="$emit('go-up-the-order')"
+                icon="pi pi-arrow-up"
+            />
+            <Button
+                variant="text"
+                size="small"
+                @click="$emit('go-down-the-order')"
+                icon="pi pi-arrow-down"
+            />
             <Button variant="text" size="small" @click="$emit('remove')" icon="pi pi-times" />
         </template>
         <template #default>
-            <slot name="content" />
+            <slot />
         </template>
         <template #footer>
             <div class="actions">
+                <Button
+                    type="button"
+                    variant="text"
+                    size="small"
+                    @click="$emit('copy')"
+                    icon="pi pi-copy"
+                />
                 <label>
                     <Checkbox
                         name="isRequired"
@@ -39,7 +57,6 @@ defineSlots<{
                     />
                     Required
                 </label>
-                <Button type="button" variant="outlined" size="small" @click="$emit('copy')" icon="pi pi-copy"/>
             </div>
         </template>
     </Panel>
@@ -61,9 +78,22 @@ h1 {
 .actions {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     width: 100%;
+    gap: 8px;
+}
+
+.content {
+    display: grid;
+    grid-template-rows: 1fr 48px;
+}
+
+.reorder-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
     gap: 8px;
 }
 </style>

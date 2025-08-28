@@ -2,37 +2,66 @@
 import TextQuestionCreator from '@/features/formBuilder/questionCreators/TextQuestionCreator.vue'
 import ChoiceQuestionCreator from '@/features/formBuilder/questionCreators/ChoiceQuestionCreator.vue'
 import { Card } from 'primevue'
-import { useFormBuilder } from '@/features/formBuilder/useFormBuilder.ts'
+import { useFormBuilder, type TQuestion } from '@/features/formBuilder/useFormBuilder.ts'
+import QuestionCreatorWrapper from '@/features/formBuilder/questionCreators/QuestionCreatorWrapper.vue'
 
 const { questions, copyQuestion, updateQuestion, removeQuestion } = useFormBuilder()
+
+const handleGoUp = (idx: number) => {
+    questions.swap(idx, idx - 1)
+}
+
+const handleGoDown = (idx: number) => {
+    questions.swap(idx, idx + 1)
+}
+
+const TITLE_MAP: Record<TQuestion['type'], string> = {
+    multiLine: 'Multi-line question',
+    oneLine: 'One-line question',
+    singleChoice: 'Single choice question',
+    multipleChoice: 'Multiple choice question',
+}
 </script>
 
 <template>
     <Card class="outer-border">
         <template #content>
-            <ul v-if="questions.length > 0">
-                <li v-for="(q, idx) in questions" :key="q.key">
-                    <TextQuestionCreator
-                        v-if="q.value.type === 'oneLine' || q.value.type === 'multiLine'"
-                        :type="q.value.type"
-                        :is-required="q.value.isRequired"
-                        :question="q.value.text"
-                        @text-answer-form-change="(value) => updateQuestion(idx, value)"
-                        @copy="copyQuestion(idx)"
-                        @remove="removeQuestion(idx)"
-                    />
-                    <ChoiceQuestionCreator
-                        v-else
-                        :type="q.value.type"
-                        :question="q.value.text"
-                        :is-required="q.value.isRequired"
-                        :idx="idx"
-                        @choice-question-form-change="(value) => updateQuestion(idx, value)"
-                        @copy="copyQuestion(idx)"
-                        @remove="removeQuestion(idx)"
-                    />
-                </li>
-            </ul>
+            <div v-if="questions.fields.value.length > 0" class="content">
+                <ul>
+                    <li v-for="(q, idx) in questions.fields.value" :key="q.key">
+                        <QuestionCreatorWrapper
+                            :title="TITLE_MAP[q.value.type]"
+                            :is-required="q.value.isRequired"
+                            @required-change="updateQuestion(idx, { isRequired: $event })"
+                            @go-down-the-order="handleGoDown(idx)"
+                            @go-up-the-order="handleGoUp(idx)"
+                        >
+                            <ChoiceQuestionCreator
+                                v-if="
+                                    q.value.type === 'singleChoice' ||
+                                    q.value.type === 'multipleChoice'
+                                "
+                                :type="q.value.type"
+                                :question="q.value.text"
+                                :is-required="q.value.isRequired"
+                                :idx="idx"
+                                @choice-question-form-change="(value) => updateQuestion(idx, value)"
+                                @copy="copyQuestion(idx)"
+                                @remove="removeQuestion(idx)"
+                            />
+                            <TextQuestionCreator
+                                v-else
+                                :type="q.value.type"
+                                :is-required="q.value.isRequired"
+                                :question="q.value.text"
+                                @text-answer-form-change="(value) => updateQuestion(idx, value)"
+                                @copy="copyQuestion(idx)"
+                                @remove="removeQuestion(idx)"
+                            />
+                        </QuestionCreatorWrapper>
+                    </li>
+                </ul>
+            </div>
             <div v-else>No questions added</div>
         </template>
     </Card>
