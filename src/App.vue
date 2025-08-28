@@ -5,8 +5,14 @@ import { Toast } from 'primevue'
 </script>
 
 <template>
-    <router-view />
-    <Toast />
-</template>
+    <div class="overlay">
+        <router-view />
+        <Toast />
+    </div>
+div</template>
 
-<style scoped></style>
+<style scoped>
+.overlay {
+    backdrop-filter: brightness(1.3) saturate(0.5);
+}
+</style>

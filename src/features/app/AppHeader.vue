@@ -38,6 +38,7 @@ import { Button } from 'primevue'
     flex-direction: row;
     justify-content: center;
     z-index: 1;
+    background-color: var(--p-content-background);
 }
 
 .header-content {

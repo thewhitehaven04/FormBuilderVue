@@ -48,4 +48,9 @@ li {
     flex-direction: column;
     align-items: center;
     width: 100vw;
+    background-image: url('../assets/bg-light.svg');
+}
+
+.app-dark #app {
+    background-image: url('../assets/bg-dark.svg');
 }
