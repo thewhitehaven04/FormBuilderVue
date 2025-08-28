@@ -7,7 +7,7 @@ import { ref, watch } from 'vue'
 import { fetchUserData } from '@/services/auth.ts'
 import { useFetcher } from '@/services/useFetcher.ts'
 import { format } from 'date-fns'
-import { CheckCircle2, Pencil, AtSign, ClipboardList, CircleX } from 'lucide-vue-next'
+import { CheckCircle2, Pencil, AtSign, ClipboardList, CircleX, ClipboardCheck } from 'lucide-vue-next'
 import { getFormCount } from '@/services/forms.ts'
 
 const schema = z.object({
@@ -117,7 +117,7 @@ watch(
                     <div>Forms created: {{ data?.formsCreated }}</div>
                 </div>
                 <div class="read-only-row">
-                    <ClipboardList />
+                    <ClipboardCheck />
                     <div>
                         Registration date:
                         {{

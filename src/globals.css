@@ -65,3 +65,7 @@ li {
 .app-dark #app {
     background-image: url('../assets/bg-dark.svg');
 }
+
+a {
+    text-decoration: none;
+}

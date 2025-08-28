@@ -24,23 +24,21 @@ defineEmits<{
         </template>
         <template #footer>
             <div class="actions">
+                <OverlayBadge :value="responseCount.toString()" severity="danger" size="small">
+                    <Button size="small" v-slot="props" as-child>
+                        <RouterLink :to="`/form/${id}/answers`" :class="props.class">
+                            <span class="pi pi-comments" />
+                        </RouterLink>
+                    </Button>
+                </OverlayBadge>
                 <Button size="small" v-slot="props" as-child>
-                    <RouterLink :to="`/form/${id}/answers`">
-                        <OverlayBadge
-                            :value="responseCount.toString()"
-                            severity="danger"
-                            size="small"
-                        >
-                            <InputIcon class="pi pi-comments" :class="props.class" />
-                        </OverlayBadge>
+                    <RouterLink :to="`form/${id}`" :class="props.class">
+                        <div class="pi pi-pencil" />
                     </RouterLink>
                 </Button>
-                <Button size="small" v-slot="props" as-child>
-                    <RouterLink :to="`form/${id}`">
-                        <InputIcon class="pi pi-pencil" :class="props.class" />
-                    </RouterLink>
+                <Button size="small" @click="$emit('remove')" v-slot="props" as-child>
+                    <span class="pi pi-trash" :class="props.class" />
                 </Button>
-                <Button size="small" @click="$emit('remove')" icon="pi pi-trash"/>
             </div>
         </template>
     </Panel>
@@ -62,13 +60,6 @@ h2 {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: flex-start;
     gap: 16px;
 }
-
-a {
-    display: block;
-    height: 100%;
-}
-
 </style>
