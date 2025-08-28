@@ -61,7 +61,7 @@ h2 {
 .actions {
     display: flex;
     flex-direction: row;
-    align-items: stretch;
+    align-items: center;
     justify-content: flex-start;
     gap: 16px;
 }

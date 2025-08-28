@@ -2,7 +2,7 @@
 import { useFetcher } from '@/services/useFetcher.ts'
 import { fetchForm } from '@/services/forms.ts'
 import { useRouter } from 'vue-router'
-import { watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useForm } from 'vee-validate'
 import { typedSchema, type TAnswerForm } from '@/features/response/validation'
 import { LoaderCircle } from 'lucide-vue-next'
@@ -12,6 +12,7 @@ import SingleChoiceResponse from '@/features/response/SingleChoiceResponse.vue'
 import MultipleChoiceResponse from '@/features/response/MultipleChoiceResponse.vue'
 import { Card, Button, useToast } from 'primevue'
 import { submitResponse } from '@/services/submissions'
+import { formatTimer } from '@/features/response/helpers'
 
 const { formId } = defineProps<{ formId: number }>()
 const { data, query } = useFetcher(async () => await fetchForm(formId))
@@ -27,6 +28,11 @@ watch(
 const { handleSubmit, setValues, isSubmitting } = useForm<TAnswerForm>({
     validationSchema: typedSchema,
 })
+
+const timer = ref(0)
+let intervalId: NodeJS.Timeout
+
+const isSubmissionDisabled = computed(() => !!data.value?.timer && timer.value === 0)
 
 watch(
     () => data.value,
@@ -51,6 +57,21 @@ watch(
                                 },
                 })) || [],
         })
+    },
+)
+
+watch(
+    () => data.value,
+    (data) => {
+        timer.value = data?.timer ?? 0
+
+        intervalId = setInterval(() => {
+            if (timer.value > 0) {
+                timer.value--
+            } else {
+                clearInterval(intervalId)
+            }
+        }, 1000)
     },
 )
 
@@ -108,12 +129,16 @@ const onSubmit = handleSubmit(async (data) => {
                 </form>
             </template>
             <template #footer>
-                <Button
-                    type="submit"
-                    form="response-form"
-                    :label="!isSubmitting ? 'Submit' : undefined"
-                    :icon="isSubmitting ? 'pi pi-spinner-dotted' : undefined"
-                />
+                <div class="footer">
+                    <Button
+                        type="submit"
+                        form="response-form"
+                        :label="!isSubmitting ? 'Submit' : undefined"
+                        :icon="isSubmitting ? 'pi pi-spinner-dotted' : undefined"
+                        :disabled="isSubmissionDisabled"
+                    />
+                    <span>{{ formatTimer(timer) }} time remaining </span>
+                </div>
             </template>
         </Card>
     </div>
@@ -137,5 +162,12 @@ button {
     display: flex;
     flex-direction: column;
     align-items: stretch;
+}
+
+.footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 </style>

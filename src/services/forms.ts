@@ -18,7 +18,7 @@ async function createForm(form: IFormCreateRequest) {
         .insert({
             title: form.title,
             description: form.description,
-            timer: form.timer ?? null
+            timer: form.timer
         })
         .select('*')
         .single()
@@ -60,6 +60,7 @@ async function editForm(formId: number, form: TFormEditRequest) {
             .update({
                 title: form.title,
                 description: form.description,
+                timer: form.timer,
             })
             .eq('id', formId)
             .throwOnError(),

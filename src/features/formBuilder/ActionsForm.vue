@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Button, Divider, useToast } from 'primevue'
 import { useFormBuilder } from '@/features/formBuilder/useFormBuilder.ts'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, RouterLink } from 'vue-router'
 
 const { addQuestion, onFormCreate, onFormEdit, onFormDelete } = useFormBuilder()
 const toast = useToast()
@@ -95,13 +95,10 @@ const handleFormDelete = () => {
             size="small"
             variant="outlined"
             severity="info"
-            icon-class="left"
-            icon="pi pi-reply"
             label="Respond"
-            as-child
-            v-slot="slotProps"
+            icon="pi pi-reply"
         >
-            <RouterLink :to="`/respond/${params.id}`" :class="slotProps.class">
+            <RouterLink :to="`/respond/${params.id}`">
                 Respond
             </RouterLink>
         </Button>
