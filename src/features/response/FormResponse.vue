@@ -38,24 +38,23 @@ watch(
     () => data.value,
     (data) => {
         setValues({
-            questions:
-                data?.questions.map((q) => ({
-                    type: q.question_type,
-                    isRequired: q.is_required,
-                    questionId: q.id,
-                    answer:
-                        q.question_type === 'oneLine' || q.question_type === 'multiLine'
-                            ? {
-                                  text: null,
-                              }
-                            : q.question_type === 'singleChoice'
-                              ? {
-                                    option: null,
-                                }
-                              : {
-                                    options: [],
-                                },
-                })) || [],
+            questions: (data?.questions.map((q) => ({
+                type: q.question_type,
+                isRequired: q.is_required,
+                questionId: q.id,
+                answer:
+                    q.question_type === 'oneLine' || q.question_type === 'multiLine'
+                        ? {
+                              text: null,
+                          }
+                        : q.question_type === 'singleChoice'
+                          ? {
+                                option: null,
+                            }
+                          : {
+                                options: [],
+                            },
+            })) || []) as TAnswerForm['questions'],
         })
     },
 )

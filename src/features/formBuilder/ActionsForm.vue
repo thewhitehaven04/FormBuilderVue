@@ -98,6 +98,7 @@ const handleFormDelete = () => {
                 severity="info"
                 label="Respond"
                 icon="pi pi-reply"
+                class="link-button"
             />
         </RouterLink>
     </section>
@@ -122,7 +123,7 @@ a {
     display: block;
 }
 
-a > button {
+.link-button {
     width: 100%;
 }
 

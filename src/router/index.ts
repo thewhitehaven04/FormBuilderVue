@@ -10,6 +10,8 @@ import HomeView from '@/views/HomeView.vue'
 import FormEditor from '@/views/FormEditor.vue'
 import FormResponses from '@/views/FormResponses.vue'
 import FormResponseWrapper from '@/views/FormResponseWrapper.vue'
+import { fetchForm } from '@/services/forms'
+import NoAccess from '@/views/NoAccess.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +35,19 @@ const router = createRouter({
                 {
                     path: 'form/:id',
                     component: FormEditor,
+                    beforeEnter: async (to) => {
+                        // don't do that in a real app, request userId from the backend explicitly
+                        const { data: user } = useUserStore()
+                        const form = await fetchForm(Number.parseInt(to.params.id as string))
+
+                        if (form.created_by === user.userId) {
+                            return true
+                        }
+
+                        return {
+                            path: '/no-access',
+                        }
+                    },
                 },
                 {
                     path: 'respond/:id',
@@ -55,6 +70,10 @@ const router = createRouter({
         {
             path: '/:pathMatch(.*)*',
             component: NotFoundView,
+        },
+        {
+            path: '/no-access',
+            component: NoAccess,
         },
     ],
 })

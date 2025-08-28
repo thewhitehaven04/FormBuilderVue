@@ -18,7 +18,7 @@ async function createForm(form: IFormCreateRequest) {
         .insert({
             title: form.title,
             description: form.description,
-            timer: form.timer
+            timer: form.timer,
         })
         .select('*')
         .single()
@@ -27,13 +27,12 @@ async function createForm(form: IFormCreateRequest) {
     const { data: q } = await supabase
         .from('questions')
         .insert(
-            form.questions
-                .map((q) => ({
-                    text: q.text,
-                    is_required: q.isRequired,
-                    question_type: q.type,
-                    form_id: created.id,
-                })),
+            form.questions.map((q) => ({
+                text: q.text,
+                is_required: q.isRequired,
+                question_type: q.type,
+                form_id: created.id,
+            })),
         )
         .select('*')
         .single()
@@ -142,6 +141,12 @@ async function fetchForms({
     text: string | null
     isAscending: boolean
 }) {
+    const uid = await (await fetchUserData()).data.user?.id
+
+    if (!uid) {
+        throw new Error('User not found')
+    }
+
     if (!text) {
         return (
             await supabase
@@ -150,6 +155,7 @@ async function fetchForms({
                 .order('created_at', {
                     ascending: isAscending,
                 })
+                .eq('created_by', uid)
                 .range(skip, skip + count)
                 .throwOnError()
         ).data
@@ -214,5 +220,5 @@ export {
     deleteOptions,
     deleteQuestions,
     getFormCount,
-    getFormSubmissions
+    getFormSubmissions,
 }

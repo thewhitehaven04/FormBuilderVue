@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import PageHeader from '@/components/PageHeader.vue'
 import SubmissionTable from '@/features/submissions/SubmissionTable.vue'
 import { fetchFormSubmissions } from '@/services/submissions'
 import { useFetcher } from '@/services/useFetcher'
 import { LoaderCircle } from 'lucide-vue-next'
+import { Card } from 'primevue'
 import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -48,13 +50,17 @@ const rowData = computed(() =>
 </script>
 
 <template>
-    <h1>Submissions</h1>
+    <PageHeader>Submissions</PageHeader>
     <p v-if="!isPending && data?.length && data?.length === 0">
         There are no submissions for this form yet
     </p>
     <div v-else class="container">
-        <LoaderCircle v-if="isPending" class="animate-pulse" />
-        <SubmissionTable :columns="columns" :value="rowData" :count="rowData.length" />
+        <Card>
+            <template #content>
+                <LoaderCircle v-if="isPending" class="animate-pulse" />
+                <SubmissionTable :columns="columns" :value="rowData" :count="rowData.length" />
+            </template>
+        </Card>
     </div>
 </template>
 
@@ -66,5 +72,9 @@ const rowData = computed(() =>
     align-items: start;
     justify-content: center;
     width: 100%;
+}
+
+h1 {
+    padding-top: 8px;
 }
 </style>

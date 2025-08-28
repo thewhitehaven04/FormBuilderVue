@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Card, InputText, Select, IconField, InputIcon } from 'primevue'
+import { Card, InputText, Select, IconField, InputIcon, Button } from 'primevue'
 import { ref, watch } from 'vue'
 import { Loader } from 'lucide-vue-next'
 import { useFetcher } from '@/services/useFetcher.ts'
 import { deleteForm, fetchForms } from '@/services/forms.ts'
 import FormPreview from '@/features/home/FormPreview.vue'
+import { RouterLink } from 'vue-router'
 
 const options = [
     { label: 'Newest first', value: false },
@@ -29,7 +30,6 @@ const handleRemove = (formId: number) => {
     deleteForm([formId])
     query()
 }
-
 </script>
 
 <template>
@@ -38,7 +38,7 @@ const handleRemove = (formId: number) => {
             <div class="title">
                 <IconField>
                     <InputIcon class="pi pi-search" />
-                    <InputText type="text" v-model="searchQuery" placeholder="Search"/>
+                    <InputText type="text" v-model="searchQuery" placeholder="Search" />
                 </IconField>
                 <Select
                     :options="options"
@@ -52,6 +52,14 @@ const handleRemove = (formId: number) => {
         <template #content>
             <div class="content">
                 <Loader v-if="isPending" animate-pulse="true" />
+                <div class="no-forms-container" v-else-if="data?.length === 0">
+                    <span>You haven't created any forms yet</span>
+                    <RouterLink to="/new-form">
+                        <Button type="button" size="large">
+                            Create the first one
+                        </Button>
+                    </RouterLink>
+                </div>
                 <div v-else class="grid">
                     <FormPreview
                         v-for="form in data"
@@ -82,7 +90,7 @@ const handleRemove = (formId: number) => {
 
 .content {
     width: 100%;
-    min-height: 200px;
+    min-height: 250px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -94,5 +102,13 @@ const handleRemove = (formId: number) => {
     gap: 16px;
     width: 100%;
     height: 100%;
+}
+
+.no-forms-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
 }
 </style>
