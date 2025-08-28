@@ -129,7 +129,13 @@ const onSubmit = handleSubmit(async (data) => {
                 </form>
             </template>
             <template #footer>
-                <div class="footer">
+                <div class="footer"></div>
+            </template>
+        </Card>
+        <Card>
+            <template #content>
+                <div class="timer-container">
+                    <div class="timer">{{ formatTimer(timer) }}</div>
                     <Button
                         type="submit"
                         form="response-form"
@@ -137,7 +143,6 @@ const onSubmit = handleSubmit(async (data) => {
                         :icon="isSubmitting ? 'pi pi-spinner-dotted' : undefined"
                         :disabled="isSubmissionDisabled"
                     />
-                    <span>{{ formatTimer(timer) }} time remaining </span>
                 </div>
             </template>
         </Card>
@@ -159,9 +164,10 @@ button {
 
 .content {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: 1fr 250px;
+    align-items: start;
+    column-gap: 16px;
 }
 
 .footer {
@@ -169,5 +175,18 @@ button {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+}
+
+.timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100px;
+}
+
+.timer {
+    font-size: 16pt;
+    font-weight: 500;
 }
 </style>

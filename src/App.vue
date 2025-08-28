@@ -5,11 +5,9 @@ import { Toast } from 'primevue'
 </script>
 
 <template>
-    <div class="overlay">
-        <router-view />
-        <Toast />
-    </div>
-div</template>
+    <router-view />
+    <Toast />
+</template>
 
 <style scoped>
 .overlay {
