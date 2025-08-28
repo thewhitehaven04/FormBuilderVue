@@ -62,9 +62,12 @@ async function fetchFormSubmissions(
     return (
         await supabase
             .from('submissions')
-            .select('*, text_answers(*, questions(*)), option_answers(*, questions(*))', {
-                count: 'exact',
-            })
+            .select(
+                '*, text_answers(*, questions(*)), option_answers(*, questions(*), options(*)), users(*)',
+                {
+                    count: 'exact',
+                },
+            )
             .eq('form_id', formId)
             .range(props.skip, props.count + props.skip)
             .throwOnError()

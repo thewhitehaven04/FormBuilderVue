@@ -33,7 +33,15 @@ export type Database = {
                     timer?: number | null
                     title?: string
                 }
-                Relationships: []
+                Relationships: [
+                    {
+                        foreignKeyName: 'forms_created_by_fkey1'
+                        columns: ['created_by']
+                        isOneToOne: false
+                        referencedRelation: 'users'
+                        referencedColumns: ['id']
+                    },
+                ]
             }
             option_answers: {
                 Row: {
@@ -160,6 +168,13 @@ export type Database = {
                         referencedRelation: 'forms'
                         referencedColumns: ['id']
                     },
+                    {
+                        foreignKeyName: 'submissions_submitted_by_fkey1'
+                        columns: ['submitted_by']
+                        isOneToOne: false
+                        referencedRelation: 'users'
+                        referencedColumns: ['id']
+                    },
                 ]
             }
             text_answers: {
@@ -194,6 +209,27 @@ export type Database = {
                         referencedColumns: ['id']
                     },
                 ]
+            }
+            users: {
+                Row: {
+                    email: string
+                    first_name: string
+                    id: string
+                    last_name: string
+                }
+                Insert: {
+                    email: string
+                    first_name: string
+                    id: string
+                    last_name: string
+                }
+                Update: {
+                    email?: string
+                    first_name?: string
+                    id?: string
+                    last_name?: string
+                }
+                Relationships: []
             }
         }
         Views: {

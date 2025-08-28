@@ -77,6 +77,10 @@ watch(
 const onSubmit = handleSubmit(async (data) => {
     try {
         await submitResponse({ formId, ...data })
+        toast.add({
+            severity: 'success',
+            summary: 'You have successfully responded to the form',
+        })
         router.push('/')
     } catch {
         toast.add({

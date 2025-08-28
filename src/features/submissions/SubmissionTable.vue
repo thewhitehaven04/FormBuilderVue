@@ -9,8 +9,8 @@ defineProps<{
 </script>
 
 <template>
-    <DataTable>
-        <Column key="submitted_by" field="Submitted by" />
+    <DataTable scrollable>
+        <Column key="submitted_by" field="Submitted by" header="Submitted by"/>
         <Column
             v-for="col in $props.columns"
             :key="col.field"
