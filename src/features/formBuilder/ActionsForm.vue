@@ -90,18 +90,16 @@ const handleFormDelete = () => {
             icon-pos="left"
             label="Delete form"
         />
-        <Button
-            v-if="type === 'edit'"
-            size="small"
-            variant="outlined"
-            severity="info"
-            label="Respond"
-            icon="pi pi-reply"
-        >
-            <RouterLink :to="`/respond/${params.id}`">
-                Respond
-            </RouterLink>
-        </Button>
+        <RouterLink :to="`/respond/${params.id}`">
+            <Button
+                v-if="type === 'edit'"
+                size="small"
+                variant="outlined"
+                severity="info"
+                label="Respond"
+                icon="pi pi-reply"
+            />
+        </RouterLink>
     </section>
 </template>
 
@@ -118,6 +116,14 @@ section {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
+}
+
+a {
+    display: block;
+}
+
+a > button {
+    width: 100%;
 }
 
 h1 {

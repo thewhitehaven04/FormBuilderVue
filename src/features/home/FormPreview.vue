@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Panel, InputIcon, Button, OverlayBadge } from 'primevue'
+import { Panel, Button, OverlayBadge } from 'primevue'
 import { RouterLink } from 'vue-router'
 
 const { id, title, description, responseCount } = defineProps<{
