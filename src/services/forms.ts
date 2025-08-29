@@ -5,7 +5,7 @@ import { supabase } from '@/services/supabase.ts'
 export interface IFormCreateRequest {
     title: string
     description: string
-    questions: TQuestion[]
+    questions: (TQuestion & { order: number })[]
     timer: number | null
 }
 
@@ -32,6 +32,7 @@ async function createForm(form: IFormCreateRequest) {
                 is_required: q.isRequired,
                 question_type: q.type,
                 form_id: created.id,
+                order: q.order,
             })),
         )
         .select('*')
@@ -73,6 +74,7 @@ async function editForm(formId: number, form: TFormEditRequest) {
                         is_required: q.isRequired,
                         question_type: q.type,
                         text: q.text,
+                        order: q.order,
                     })),
             )
             .throwOnError(),
@@ -87,6 +89,7 @@ async function editForm(formId: number, form: TFormEditRequest) {
                         is_required: q.isRequired,
                         question_type: q.type,
                         text: q.text,
+                        order: q.order,
                     })),
             )
             .throwOnError(),
@@ -191,7 +194,6 @@ async function getFormSubmissions(formId: number) {
         .select('*')
         .eq('form_id', formId)
         .eq('submitted_by', data.user?.id || '')
-        .select('*')
         .throwOnError()
 }
 

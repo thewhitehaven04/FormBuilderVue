@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Card, Button, InputText, IconField, InputIcon } from 'primevue'
+import { Card, Button, InputText, IconField, InputIcon, Avatar } from 'primevue'
 import { z } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
@@ -7,7 +7,14 @@ import { ref, watch } from 'vue'
 import { fetchUserData } from '@/services/auth.ts'
 import { useFetcher } from '@/services/useFetcher.ts'
 import { format } from 'date-fns'
-import { CheckCircle2, Pencil, AtSign, ClipboardList, CircleX, ClipboardCheck } from 'lucide-vue-next'
+import {
+    CheckCircle2,
+    Pencil,
+    AtSign,
+    ClipboardList,
+    CircleX,
+    ClipboardCheck,
+} from 'lucide-vue-next'
 import { getFormCount } from '@/services/forms.ts'
 
 const schema = z.object({
@@ -37,7 +44,6 @@ const getUserData = async () => {
 const { query, data } = useFetcher(async () => await getUserData())
 
 query()
-
 const onProfileUpdateSubmit = handleSubmit(() => toggleIsEditing())
 
 const onReset = () => {
@@ -85,6 +91,9 @@ watch(
         <template #content>
             <div class="form-content">
                 <form id="profile" @submit="onProfileUpdateSubmit" @reset="onReset">
+                    <FileUpload>
+                        <Avatar size="large" label="U" />
+                    </FileUpload>
                     <IconField>
                         <InputIcon class="pi pi-user" />
                         <InputText

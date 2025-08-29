@@ -93,7 +93,10 @@ export const getFormProvider = (formId?: number) => {
                 createForm({
                     title: values.title,
                     description: values.description,
-                    questions: values.questions,
+                    questions: values.questions.map((q, idx) => ({
+                        ...q,
+                        order: idx,
+                    })),
                     timer: values.timer,
                 })
                 onSuccess()
@@ -139,7 +142,10 @@ export const getFormProvider = (formId?: number) => {
                 await editForm(formId, {
                     title: values.title || '',
                     description: values.description || '',
-                    questions: values.questions,
+                    questions: values.questions.map((q, idx) => ({
+                        ...q,
+                        order: idx,
+                    })),
                     timer: values.timer,
                 })
                 await deleteQuestions(deletedQuestionIds.value)
