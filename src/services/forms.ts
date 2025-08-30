@@ -24,33 +24,41 @@ async function createForm(form: IFormCreateRequest) {
         .single()
         .throwOnError()
 
-    const { data: q } = await supabase
-        .from('questions')
-        .insert(
-            form.questions.map((q) => ({
-                text: q.text,
-                is_required: q.isRequired,
-                question_type: q.type,
-                form_id: created.id,
-                order: q.order,
-            })),
-        )
-        .select('*')
-        .single()
-        .throwOnError()
-    for (const question of form.questions) {
-        if (question.type === 'singleChoice' || question.type === 'multipleChoice') {
-            await supabase
-                .from('options')
-                .insert(
-                    question.options.map((opt) => ({
-                        text: opt.text,
-                        question_id: q.id,
-                    })),
-                )
-                .throwOnError()
+    const questions = (
+        await supabase
+            .from('questions')
+            .insert(
+                form.questions.map((q) => ({
+                    text: q.text,
+                    is_required: q.isRequired,
+                    question_type: q.type,
+                    form_id: created.id,
+                    order: q.order,
+                })),
+            )
+            .select('*')
+            .throwOnError()
+    ).data
+
+    questions.forEach(async (question, i) => {
+        if (
+            question.question_type === 'singleChoice' ||
+            question.question_type === 'multipleChoice'
+        ) {
+            const q = form.questions[i]
+            if (q) {
+                await supabase
+                    .from('options')
+                    .insert(
+                        q.options.map((opt) => ({
+                            text: opt.text,
+                            question_id: question.id,
+                        })),
+                    )
+                    .throwOnError()
+            }
         }
-    }
+    })
 }
 
 async function editForm(formId: number, form: TFormEditRequest) {
