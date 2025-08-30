@@ -18,7 +18,7 @@ defineProps({
 </script>
 
 <template>
-    <Dialog title="Reset password" :modal="false" :visible="visible">
+    <Dialog title="Reset password" :modal="false">
         <InputText type="password" v-model="email" />
         <Button type="button" @click="handleReset">Reset</Button>
         <Message v-if="isSuccessMessageShown" severity="success" size="small"

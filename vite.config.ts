@@ -10,7 +10,7 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
-  base: '/FormBuilderVue/',
+  base: process.env.NODE_ENV === 'production' ? '/FormBuilderVue/' : '/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

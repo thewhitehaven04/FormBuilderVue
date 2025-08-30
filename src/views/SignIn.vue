@@ -12,5 +12,5 @@ const handleReset = () => {
 
 <template>
     <SignInForm @reset="handleReset" />
-    <ResetPasswordForm :visible="isResetModalShown" />
+    <ResetPasswordForm v-if="isResetModalShown" />
 </template>

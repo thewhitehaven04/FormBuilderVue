@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Card, Button, InputText, IconField, InputIcon, Avatar } from 'primevue'
+import { Card, Button, InputText, IconField, InputIcon, Avatar, FileUpload } from 'primevue'
 import { z } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'

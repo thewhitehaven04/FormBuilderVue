@@ -23,18 +23,30 @@ const router = createRouter({
                 {
                     path: '',
                     component: HomeView,
+                    meta: {
+                        title: 'Home',
+                    },
                 },
                 {
                     path: 'profile',
                     component: ProfileView,
+                    meta: {
+                        title: 'Profile',
+                    },
                 },
                 {
                     path: 'new-form',
                     component: FormBuilder,
+                    meta: {
+                        title: 'New form'
+                    }
                 },
                 {
                     path: 'form/:id',
                     component: FormEditor,
+                    meta: {
+                        title: 'Form editor',
+                    },
                     beforeEnter: async (to) => {
                         // don't do that in a real app, request userId from the backend explicitly
                         const { data: user } = useUserStore()
@@ -52,28 +64,46 @@ const router = createRouter({
                 {
                     path: 'respond/:id',
                     component: FormResponseWrapper,
+                    meta: {
+                        title: 'Respond to: ',
+                    }
                 },
                 {
                     path: '/form/:id/answers',
                     component: FormResponses,
+                    meta: {
+                        title: 'Form responses',
+                    }
                 },
             ],
         },
         {
             path: '/sign-in',
             component: SignIn,
+            meta: {
+                title: 'Sign in'
+            }
         },
         {
             path: '/sign-up',
             component: SignUp,
+            meta: {
+                title: 'Sign up'
+            }
         },
         {
             path: '/:pathMatch(.*)*',
             component: NotFoundView,
+            meta: {
+                title: '404'
+            }
         },
         {
             path: '/no-access',
             component: NoAccess,
+            meta: {
+                title: 'No access'
+            }
         },
     ],
 })
@@ -81,15 +111,20 @@ const router = createRouter({
 router.beforeEach((to) => {
     const { isLoggedIn: isUserLoggedIn } = useUserStore()
 
+    if (to.meta.title) {
+        const title = document.querySelector('title')
+        if (!!title) {
+            title.text = (to.meta.title as string) ?? 'Form builder' 
+        }
+    }
+
     if (isUserLoggedIn) {
         if (to.path !== '/sign-in' && to.path !== '/sign-up') {
             return true
         }
         return '/'
     } else if (to.path !== '/sign-in' && to.path !== '/sign-up') {
-        return {
-            path: '/sign-in',
-        }
+        return { path: '/sign-in' }
     }
     return true
 })

@@ -35,6 +35,8 @@ const TITLE_MAP: Record<TQuestion['type'], string> = {
                             @required-change="updateQuestion(idx, { isRequired: $event })"
                             @go-down-the-order="handleGoDown(idx)"
                             @go-up-the-order="handleGoUp(idx)"
+                            @remove="removeQuestion(idx)"
+                            @copy="copyQuestion(idx)"
                         >
                             <ChoiceQuestionCreator
                                 v-if="
@@ -46,8 +48,6 @@ const TITLE_MAP: Record<TQuestion['type'], string> = {
                                 :is-required="q.value.isRequired"
                                 :idx="idx"
                                 @choice-question-form-change="(value) => updateQuestion(idx, value)"
-                                @copy="copyQuestion(idx)"
-                                @remove="removeQuestion(idx)"
                             />
                             <TextQuestionCreator
                                 v-else
@@ -55,8 +55,6 @@ const TITLE_MAP: Record<TQuestion['type'], string> = {
                                 :is-required="q.value.isRequired"
                                 :question="q.value.text"
                                 @text-answer-form-change="(value) => updateQuestion(idx, value)"
-                                @copy="copyQuestion(idx)"
-                                @remove="removeQuestion(idx)"
                             />
                         </QuestionCreatorWrapper>
                     </li>
