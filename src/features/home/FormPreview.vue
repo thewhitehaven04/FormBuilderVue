@@ -36,8 +36,8 @@ defineEmits<{
                         <div class="pi pi-pencil" />
                     </RouterLink>
                 </Button>
-                <Button size="small" @click="$emit('remove')" v-slot="props" as-child>
-                    <span class="pi pi-trash" :class="props.class" />
+                <Button size="small" v-slot="props" as-child>
+                    <span class="pi pi-trash" :class="props.class" @click="$emit('remove')" />
                 </Button>
             </div>
         </template>
