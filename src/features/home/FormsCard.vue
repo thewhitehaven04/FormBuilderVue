@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { Card, InputText, Select, IconField, InputIcon, Button } from 'primevue'
+import { Card, InputText, Select, IconField, InputIcon, Button, ProgressSpinner } from 'primevue'
 import { ref, watch } from 'vue'
-import { Loader } from 'lucide-vue-next'
 import { useFetcher } from '@/services/useFetcher.ts'
 import { deleteForm, fetchForms } from '@/services/forms.ts'
 import FormPreview from '@/features/home/FormPreview.vue'
@@ -51,13 +50,11 @@ const handleRemove = (formId: number) => {
         </template>
         <template #content>
             <div class="content">
-                <Loader v-if="isPending" animate-pulse="true" />
+                <ProgressSpinner v-if="isPending" />
                 <div class="no-forms-container" v-else-if="data?.length === 0">
                     <span>You haven't created any forms yet</span>
                     <RouterLink to="/new-form">
-                        <Button type="button" size="large">
-                            Create the first one
-                        </Button>
+                        <Button type="button" size="large"> Create the first one </Button>
                     </RouterLink>
                 </div>
                 <div v-else class="grid">

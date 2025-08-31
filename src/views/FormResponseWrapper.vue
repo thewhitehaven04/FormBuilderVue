@@ -2,7 +2,7 @@
 import { getFormSubmissions } from '@/services/forms'
 import { useFetcher } from '@/services/useFetcher'
 import { computed, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import FormResponse from '@/features/response/FormResponse.vue'
 import { Button } from 'primevue'
 
@@ -23,8 +23,8 @@ const hasSubmissions = computed(() => (data?.value?.data.length ?? 0) > 0)
 <template>
     <div v-if="hasSubmissions">
         <p>You have already submitted a response to this form.</p>
-        <Button as-child>
-            <RouterLink to="/">Go back</RouterLink>
+        <Button as-child v-slot="props">
+            <RouterLink to="/" :class="props.class"> Go back </RouterLink>
         </Button>
     </div>
     <FormResponse v-else :form-id="formId" />

@@ -9,14 +9,14 @@ defineProps<{
 </script>
 
 <template>
-    <DataTable scrollable>
-        <Column key="submitted_by" field="Submitted by" header="Submitted by"/>
+    <DataTable show-gridlines striped-rows paginator :rows="10" table-style="min-width: 400px" scrollable>
+        <Column key="submitted_by" field="Submitted by" header="Submitted by" />
         <Column
             v-for="col in $props.columns"
             :key="col.field"
             :field="col.field"
             :header="col.header"
         />
-        <template #footer> There are {{ $props.count }} submissions in total </template>
+        <template #footer> Total submissions: {{ $props.count }} </template>
     </DataTable>
 </template>

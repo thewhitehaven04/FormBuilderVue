@@ -105,7 +105,7 @@ const onSubmit = handleSubmit(async (data) => {
             <template #content>
                 <form id="response-form" @submit="onSubmit" @submit.prevent>
                     <ul>
-                        <LoaderCircle v-if="!data" />
+                        <ProgressSpinner v-if="!data" />
                         <li v-else v-for="(question, idx) in data.questions" :key="question.id">
                             <OneLineResponse
                                 :idx="idx"

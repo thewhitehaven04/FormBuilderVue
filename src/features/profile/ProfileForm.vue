@@ -1,5 +1,16 @@
 <script setup lang="ts">
-import { Card, Button, InputText, IconField, InputIcon, Avatar, FileUpload } from 'primevue'
+import {
+    Card,
+    Button,
+    InputText,
+    IconField,
+    InputIcon,
+    FileUpload,
+    Image,
+    type FileUploadSelectEvent,
+    Avatar,
+    type FileUploadRemoveEvent,
+} from 'primevue'
 import { z } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
@@ -16,6 +27,8 @@ import {
     ClipboardCheck,
 } from 'lucide-vue-next'
 import { getFormCount } from '@/services/forms.ts'
+import { supabase } from '@/services/supabase'
+import { getAvatarPath } from '@/features/profile/helpers'
 
 const schema = z.object({
     name: z.string().min(1),
@@ -36,9 +49,14 @@ const { defineField, handleSubmit, handleReset } = useForm<TChangeMetadataDto>({
 })
 
 const getUserData = async () => {
-    const userData = await fetchUserData()
-    const count = await getFormCount()
-    return { userData: userData.data, formsCreated: count }
+    const [userData, formsCreated] = await Promise.all([
+        (await fetchUserData()).data,
+        await getFormCount(),
+    ])
+    if (userData.user) {
+        const avatar = await getAvatarPath(userData.user.id)
+        return { userData, formsCreated, avatar }
+    }
 }
 
 const { query, data } = useFetcher(async () => await getUserData())
@@ -65,6 +83,22 @@ watch(
     },
     { immediate: true },
 )
+
+const handleUpload = async (evt: FileUploadSelectEvent) => {
+    if (data.value?.userData.user) {
+        await supabase.storage
+            .from('profileImages')
+            .upload(`public/${data.value?.userData.user.id}`, evt.files[0] as Blob, {
+                upsert: true,
+            })
+    }
+    query()
+}
+
+const handleRemove = async () => {
+    await supabase.storage.from('profileImages').remove([`public/${data.value?.userData.user.id}`])
+    query()
+}
 </script>
 
 <template>
@@ -91,9 +125,34 @@ watch(
         <template #content>
             <div class="form-content">
                 <form id="profile" @submit="onProfileUpdateSubmit" @reset="onReset">
-                    <FileUpload>
-                        <Avatar size="large" label="U" />
-                    </FileUpload>
+                    <div class="avatar-controls">
+                        <FileUpload
+                            mode="basic"
+                            @remove-uploaded-file="handleRemove"
+                            custom-upload
+                            accept="image/*"
+                            @select="handleUpload($event)"
+                            :choose-label="data?.avatar ? 'Update' : 'Upload'"
+                            auto
+                        />
+                        <Button
+                            v-if="data?.avatar"
+                            @click="handleRemove"
+                            severity="danger"
+                            label="Remove"
+                            icon="pi pi-trash"
+                        />
+                    </div>
+                    <Image v-if="data?.avatar" preview>
+                        <template #image>
+                            <div class="image-wrapper">
+                                <img :src="data.avatar" class="avatar-image" alt="preview"/>
+                            </div>
+                        </template>
+                        <template #preview="slotProps">
+                            <img :src="data.avatar" alt="preview" :style="slotProps.style" />
+                        </template>
+                    </Image>
                     <IconField>
                         <InputIcon class="pi pi-user" />
                         <InputText
@@ -190,6 +249,26 @@ form {
 
 button,
 input {
+    width: 100%;
+}
+
+.avatar-controls {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.avatar-image {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    clip-path: circle(50%);
+}
+
+.image-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
 }
 </style>

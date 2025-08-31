@@ -8,7 +8,7 @@ import { Button } from 'primevue'
 <template>
     <header class="header">
         <div class="header-content">
-            <h1 class="title">Form Builder</h1>
+            <h1 class="title">Form builder</h1>
             <div class="link-row">
                 <RouterLink to="/" exactActiveClass="link-active">
                     <Button variant="text" size="small">Home</Button>
@@ -69,8 +69,8 @@ h1 {
 }
 
 .title {
-    font-size: 36px;
-    font-weight: bold;
+    font-size: 32px;
+    font-weight: medium;
 }
 
 .link-active {

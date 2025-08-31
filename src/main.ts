@@ -5,10 +5,11 @@ import App from './App.vue'
 import router from './router'
 import PrimeVue, { type PrimeVueConfiguration } from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
-import { ToastService } from 'primevue'
+import { ToastService, Tooltip } from 'primevue'
 import { configure } from 'vee-validate'
 
 const app = createApp(App)
+app.directive('tooltip', Tooltip)
 export const DARK_MODE_SELECTOR_CLASS = 'app-dark'
 
 app.use(createPinia())
