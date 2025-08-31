@@ -3,6 +3,7 @@ import { supabase } from '@/services/supabase'
 async function updateAvatar(userId: string, file: Blob) {
     return await supabase.storage.from('profileImages').upload(`public/${userId}`, file, {
         upsert: true,
+        cacheControl: '0',
     })
 }
 
