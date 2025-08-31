@@ -2,101 +2,71 @@
 import {
     Card,
     Button,
-    InputText,
     IconField,
     InputIcon,
     FileUpload,
     Image,
     type FileUploadSelectEvent,
-    Avatar,
-    type FileUploadRemoveEvent,
 } from 'primevue'
-import { z } from 'zod'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import { ref, watch } from 'vue'
-import { fetchUserData } from '@/services/auth.ts'
 import { useFetcher } from '@/services/useFetcher.ts'
-import { format } from 'date-fns'
-import {
-    CheckCircle2,
-    Pencil,
-    AtSign,
-    ClipboardList,
-    CircleX,
-    ClipboardCheck,
-} from 'lucide-vue-next'
+import { AtSign, ClipboardList } from 'lucide-vue-next'
 import { getFormCount } from '@/services/forms.ts'
-import { supabase } from '@/services/supabase'
 import { getAvatarPath } from '@/features/profile/helpers'
-
-const schema = z.object({
-    name: z.string().min(1),
-    lastName: z.string().min(1),
-})
-
-type TChangeMetadataDto = z.infer<typeof schema>
-const validationSchema = toTypedSchema(schema)
+import FormInput from '@/components/FormInput.vue'
+import { validationSchema, type TUpdateUserFormDto } from '@/features/profile/validation'
+import { removeAvatar, updateAvatar } from '@/services/storage'
+import { fetchUserData, updateUserData } from '@/services/users'
 
 const isEditing = ref(false)
 
-const toggleIsEditing = () => {
-    isEditing.value = !isEditing.value
-}
+const toggleIsEditing = () => (isEditing.value = !isEditing.value)
 
-const { defineField, handleSubmit, handleReset } = useForm<TChangeMetadataDto>({
+const { setValues, handleSubmit, handleReset, values } = useForm<TUpdateUserFormDto>({
     validationSchema,
 })
 
 const getUserData = async () => {
-    const [userData, formsCreated] = await Promise.all([
-        (await fetchUserData()).data,
-        await getFormCount(),
-    ])
-    if (userData.user) {
-        const avatar = await getAvatarPath(userData.user.id)
-        return { userData, formsCreated, avatar }
-    }
+    const [userData, formsCreated] = await Promise.all([fetchUserData(), getFormCount()])
+    const avatar = await getAvatarPath(userData.id)
+    return { userData, formsCreated, avatar }
 }
 
 const { query, data } = useFetcher(async () => await getUserData())
 
 query()
-const onProfileUpdateSubmit = handleSubmit(() => toggleIsEditing())
+const onProfileUpdateSubmit = handleSubmit(async (data) => {
+    await updateUserData(data)
+    toggleIsEditing()
+})
 
 const onReset = () => {
     handleReset()
     toggleIsEditing()
 }
 
-const [name, nameProps] = defineField('name')
-const [lastName, lastNameProps] = defineField('lastName')
-
 watch(
     data,
     (data) => {
-        const user = data?.userData.user
-        if (user) {
-            name.value = user.user_metadata.firstName
-            lastName.value = user.user_metadata.lastName
-        }
+        setValues({
+            id: data?.userData.id,
+            name: data?.userData.first_name,
+            lastName: data?.userData.last_name,
+            email: data?.userData.email,
+        })
     },
     { immediate: true },
 )
 
+/** TODO: add toasts to indicate failure */
 const handleUpload = async (evt: FileUploadSelectEvent) => {
-    if (data.value?.userData.user) {
-        await supabase.storage
-            .from('profileImages')
-            .upload(`public/${data.value?.userData.user.id}`, evt.files[0] as Blob, {
-                upsert: true,
-            })
-    }
+    await updateAvatar(values.id, evt.files[0] as Blob)
     query()
 }
 
 const handleRemove = async () => {
-    await supabase.storage.from('profileImages').remove([`public/${data.value?.userData.user.id}`])
+    removeAvatar(values.id)
     query()
 }
 </script>
@@ -107,18 +77,30 @@ const handleRemove = async () => {
             <div class="title">
                 Profile
                 <div class="form-top-row">
+                    <template v-if="isEditing">
+                        <Button
+                            form="profile"
+                            type="submit"
+                            size="large"
+                            variant="text"
+                            icon="pi pi-check"
+                        />
+                        <Button
+                            :disabled="!isEditing"
+                            form="profile"
+                            type="reset"
+                            size="large"
+                            variant="text"
+                            icon="pi pi-times"
+                        />
+                    </template>
                     <Button
-                        v-if="isEditing"
-                        form="profile"
-                        type="submit"
+                        v-else
                         variant="text"
-                        size="small"
-                    >
-                        <CheckCircle2 />
-                    </Button>
-                    <Button v-else variant="text" @click="toggleIsEditing" size="small">
-                        <Pencil />
-                    </Button>
+                        @click="toggleIsEditing"
+                        size="large"
+                        icon="pi pi-pencil"
+                    />
                 </div>
             </div>
         </template>
@@ -146,7 +128,7 @@ const handleRemove = async () => {
                     <Image v-if="data?.avatar" preview>
                         <template #image>
                             <div class="image-wrapper">
-                                <img :src="data.avatar" class="avatar-image" alt="preview"/>
+                                <img :src="data.avatar" class="avatar-image" alt="preview" />
                             </div>
                         </template>
                         <template #preview="slotProps">
@@ -155,50 +137,31 @@ const handleRemove = async () => {
                     </Image>
                     <IconField>
                         <InputIcon class="pi pi-user" />
-                        <InputText
+                        <FormInput
                             type="text"
                             name="name"
                             placeholder="Name"
-                            v-model="name"
-                            v-bind="nameProps"
                             :disabled="!isEditing"
                         />
                     </IconField>
                     <IconField>
                         <InputIcon class="pi pi-user" />
-                        <InputText
+                        <FormInput
                             type="text"
                             name="lastName"
                             placeholder="Last name"
-                            v-model="lastName"
-                            v-bind="lastNameProps"
                             :disabled="!isEditing"
                         />
                     </IconField>
                 </form>
                 <div class="read-only-row">
                     <AtSign />
-                    <div>{{ data?.userData.user?.email }}</div>
+                    <div>{{ data?.userData.email }}</div>
                 </div>
                 <div class="read-only-row">
                     <ClipboardList />
                     <div>Forms created: {{ data?.formsCreated }}</div>
                 </div>
-                <div class="read-only-row">
-                    <ClipboardCheck />
-                    <div>
-                        Registration date:
-                        {{
-                            data?.userData.user?.created_at
-                                ? format(data?.userData.user.created_at, 'dd.mm.yyyy, HH:MM:SS')
-                                : null
-                        }}
-                    </div>
-                </div>
-                <Button :disabled="!isEditing" form="profile" type="reset">
-                    <CircleX />
-                    Reset
-                </Button>
             </div>
         </template>
     </Card>

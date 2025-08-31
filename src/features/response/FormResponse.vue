@@ -5,7 +5,6 @@ import { useRouter } from 'vue-router'
 import { computed, ref, watch } from 'vue'
 import { useForm } from 'vee-validate'
 import { typedSchema, type TAnswerForm } from '@/features/response/validation'
-import { LoaderCircle } from 'lucide-vue-next'
 import OneLineResponse from '@/features/response/OneLineResponse.vue'
 import MultiLineResponse from '@/features/response/MultiLineResponse.vue'
 import SingleChoiceResponse from '@/features/response/SingleChoiceResponse.vue'
@@ -29,7 +28,7 @@ const { handleSubmit, setValues, isSubmitting } = useForm<TAnswerForm>({
     validationSchema: typedSchema,
 })
 
-const timer = ref(0)
+const timer = ref<null | number>(null)
 let intervalId: NodeJS.Timeout
 
 const isSubmissionDisabled = computed(() => !!data.value?.timer && timer.value === 0)
@@ -67,7 +66,7 @@ watch(
         timer.value = data?.timer ?? 0
 
         intervalId = setInterval(() => {
-            if (timer.value > 0) {
+            if (timer.value && timer.value > 0) {
                 timer.value--
             } else {
                 clearInterval(intervalId)
@@ -140,7 +139,7 @@ const onSubmit = handleSubmit(async (data) => {
         <Card>
             <template #content>
                 <div class="timer-container">
-                    <div class="timer">{{ formatTimer(timer) }}</div>
+                    <div v-if="timer" class="timer">{{ formatTimer(timer) }}</div>
                     <Button
                         type="submit"
                         form="response-form"
