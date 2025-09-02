@@ -81,12 +81,14 @@ const onSubmit = handleSubmit(async (data) => {
         toast.add({
             severity: 'success',
             summary: 'You have successfully responded to the form',
+            life: 5000,
         })
         router.push('/')
     } catch {
         toast.add({
             severity: 'error',
             summary: 'Unable to submit the form. Try again later',
+            life: 5000,
         })
     }
 })

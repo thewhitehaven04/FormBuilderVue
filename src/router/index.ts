@@ -12,6 +12,8 @@ import FormResponses from '@/views/FormResponses.vue'
 import FormResponseWrapper from '@/views/FormResponseWrapper.vue'
 import { fetchForm } from '@/services/forms'
 import NoAccess from '@/views/NoAccess.vue'
+import SingleChoiceQuestionBreakdown from '@/views/SingleChoiceQuestionBreakdown.vue'
+import MultipleChoiceQuestionBreakdown from '@/views/MultipleChoiceQuestionBreakdown.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,8 +40,8 @@ const router = createRouter({
                     path: 'new-form',
                     component: FormBuilder,
                     meta: {
-                        title: 'New form'
-                    }
+                        title: 'New form',
+                    },
                 },
                 {
                     path: 'form/:id',
@@ -66,14 +68,28 @@ const router = createRouter({
                     component: FormResponseWrapper,
                     meta: {
                         title: 'Respond to: ',
-                    }
+                    },
                 },
                 {
                     path: '/form/:id/answers',
                     component: FormResponses,
                     meta: {
                         title: 'Form responses',
-                    }
+                    },
+                },
+                {
+                    path: '/form/:formId/question/:questionId/single-choice/breakdown',
+                    component: SingleChoiceQuestionBreakdown,
+                    meta: {
+                        title: 'Question breakdown',
+                    },
+                },
+                {
+                    path: '/form/:formId/question/:questionId/multiple-choice/breakdown',
+                    component: MultipleChoiceQuestionBreakdown,
+                    meta: {
+                        title: 'Question breakdown',
+                    },
                 },
             ],
         },
@@ -81,29 +97,29 @@ const router = createRouter({
             path: '/sign-in',
             component: SignIn,
             meta: {
-                title: 'Sign in'
-            }
+                title: 'Sign in',
+            },
         },
         {
             path: '/sign-up',
             component: SignUp,
             meta: {
-                title: 'Sign up'
-            }
+                title: 'Sign up',
+            },
         },
         {
             path: '/:pathMatch(.*)*',
             component: NotFoundView,
             meta: {
-                title: '404'
-            }
+                title: '404',
+            },
         },
         {
             path: '/no-access',
             component: NoAccess,
             meta: {
-                title: 'No access'
-            }
+                title: 'No access',
+            },
         },
     ],
 })
@@ -114,7 +130,7 @@ router.beforeEach((to) => {
     if (to.meta.title) {
         const title = document.querySelector('title')
         if (!!title) {
-            title.text = (to.meta.title as string) ?? 'Form builder' 
+            title.text = (to.meta.title as string) ?? 'Form builder'
         }
     }
 

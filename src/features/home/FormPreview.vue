@@ -11,6 +11,7 @@ const { id, title, description, responseCount } = defineProps<{
 
 defineEmits<{
     (e: 'remove'): void
+    (e: 'share'): void
 }>()
 </script>
 
@@ -25,19 +26,22 @@ defineEmits<{
         <template #footer>
             <div class="actions">
                 <OverlayBadge :value="responseCount.toString()" severity="danger" size="small">
-                    <Button size="small" v-slot="props" as-child>
+                    <Button size="small" variant="text" v-slot="props" as-child>
                         <RouterLink :to="`/form/${id}/answers`" :class="props.class">
                             <span class="pi pi-comments" />
                         </RouterLink>
                     </Button>
                 </OverlayBadge>
-                <Button size="small" v-slot="props" as-child>
+                <Button size="small" variant="text" v-slot="props" as-child>
                     <RouterLink :to="`form/${id}`" :class="props.class">
                         <div class="pi pi-pencil" />
                     </RouterLink>
                 </Button>
-                <Button size="small" v-slot="props" as-child>
+                <Button size="small" variant="text" v-slot="props" as-child>
                     <span class="pi pi-trash" :class="props.class" @click="$emit('remove')" />
+                </Button>
+                <Button size="small" variant="text" v-slot="props" as-child>
+                    <span class="pi pi-share-alt" :class="props.class" @click="$emit('share')" />
                 </Button>
             </div>
         </template>
@@ -57,9 +61,12 @@ h2 {
 }
 
 .actions {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    display: grid;
+    grid-template-columns : repeat(3, min-content) 1fr;
     gap: 16px;
+}
+
+.actions > *:last-of-type {
+    justify-self: end;
 }
 </style>

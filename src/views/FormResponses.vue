@@ -19,9 +19,19 @@ watch(
     { immediate: true },
 )
 
-const columnNames = computed(() => (data.value ? getColumns(data.value) : []))
-const columns = computed(() => columnNames.value.map((name) => ({ field: name, header: name })))
-const rowData = computed(() => (data.value ? getData(columnNames.value, data.value) : []))
+const columns = computed(() =>
+    data.value
+        ? getColumns(data.value).map((c) => ({ field: c.id, header: c.text, type: c.type }))
+        : [],
+)
+const rowData = computed(() =>
+    data.value
+        ? getData(
+              columns.value.map((c) => c.field),
+              data.value,
+          )
+        : [],
+)
 </script>
 
 <template>
@@ -33,7 +43,12 @@ const rowData = computed(() => (data.value ? getData(columnNames.value, data.val
         <Card>
             <template #content>
                 <ProgressSpinner v-if="isPending" />
-                <SubmissionTable v-else :columns="columns" :value="rowData" :count="rowData.length" />
+                <SubmissionTable
+                    v-else
+                    :columns="columns"
+                    :value="rowData"
+                    :count="rowData.length"
+                />
             </template>
         </Card>
     </div>

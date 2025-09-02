@@ -74,4 +74,14 @@ async function fetchFormSubmissions(
     ).data
 }
 
-export { submitResponse, fetchFormSubmissions }
+async function fetchAnswers(questionId: number) {
+    return (
+        await supabase
+            .from('option_answers')
+            .select('*, questions(*, options!options_question_id_fkey(*))')
+            .eq('question_id', questionId)
+            .throwOnError()
+    ).data
+}
+
+export { submitResponse, fetchFormSubmissions, fetchAnswers }

@@ -1,10 +1,20 @@
 <script setup lang="ts">
-import { Card, InputText, Select, IconField, InputIcon, Button, ProgressSpinner } from 'primevue'
+import {
+    Card,
+    InputText,
+    Select,
+    IconField,
+    InputIcon,
+    Button,
+    ProgressSpinner,
+    useToast,
+} from 'primevue'
 import { ref, watch } from 'vue'
 import { useFetcher } from '@/services/useFetcher.ts'
 import { deleteForm, fetchForms } from '@/services/forms.ts'
 import FormPreview from '@/features/home/FormPreview.vue'
 import { RouterLink } from 'vue-router'
+import { buildLink } from '@/features/home/helpers'
 
 const options = [
     { label: 'Newest first', value: false },
@@ -12,6 +22,8 @@ const options = [
 ]
 const searchQuery = ref(null)
 const activeOptions = ref(options[1].value)
+
+const toast = useToast()
 
 const { data, query, isPending } = useFetcher(
     async () =>
@@ -28,6 +40,15 @@ watch([searchQuery, activeOptions], () => query(), { immediate: true })
 const handleRemove = (formId: number) => {
     deleteForm([formId])
     query()
+}
+
+const handleShare = async (formId: number) => {
+    await navigator.clipboard.writeText(buildLink(`respond/${formId}`))
+    toast.add({
+        severity: 'success',
+        summary: 'Link copied to clipboard',
+        life: 5000,
+    })
 }
 </script>
 
@@ -66,6 +87,7 @@ const handleRemove = (formId: number) => {
                         :id="form.id"
                         :response-count="form.submissions[0].count"
                         @remove="handleRemove(form.id)"
+                        @share="handleShare(form.id)"
                     />
                 </div>
             </div>

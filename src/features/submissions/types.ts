@@ -1,4 +1,5 @@
 export interface IColumn {
-    field: string
+    field: number 
     header: string
+    type: 'oneLine' | 'multiLine' | 'singleChoice' | 'multipleChoice'
 }

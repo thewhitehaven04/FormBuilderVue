@@ -17,6 +17,7 @@ const onSaveSuccess = () => {
     toast.add({
         severity: 'success',
         summary: 'The form has been successfully saved',
+        life: 5000,
     })
 }
 
@@ -24,6 +25,7 @@ const onSaveError = () => {
     toast.add({
         severity: 'error',
         summary: 'Unable to save the form. Try again later',
+        life: 5000,
     })
 }
 
