@@ -6,7 +6,7 @@ export function useFetcher<T>(func: () => Promise<T>, reactiveDeps: unknown[] | 
     const isPending = ref(true)
     const isFetching = ref(false)
 
-    const refetch = async () => {
+    const fetch = async () => {
         try {
             isFetching.value = true
             data.value = await func()
@@ -18,7 +18,7 @@ export function useFetcher<T>(func: () => Promise<T>, reactiveDeps: unknown[] | 
         }
     }
 
-    watch(reactiveDeps, () => refetch(), { immediate: true })
+    watch(reactiveDeps, () => fetch(), { immediate: true })
 
-    return { data, hasError, isPending, isFetching, refetch }
+    return { data, hasError, isPending, isFetching, fetch }
 }

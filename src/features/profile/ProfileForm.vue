@@ -33,7 +33,8 @@ const getUserData = async () => {
     return { userData, formsCreated, avatar }
 }
 
-const { data, refetch } = useFetcher(async () => await getUserData(), [])
+const { data, fetch } = useFetcher(async () => await getUserData(), [])
+fetch()
 const onProfileUpdateSubmit = handleSubmit(async (data) => {
     await updateUserData(data)
     toggleIsEditing()
@@ -60,12 +61,12 @@ watch(
 /** TODO: add toasts to indicate failure */
 const handleUpload = async (evt: FileUploadSelectEvent) => {
     await updateAvatar(values.id, evt.files[0] as Blob)
-    refetch()
+    fetch()
 }
 
 const handleRemove = async () => {
     removeAvatar(values.id)
-    refetch()
+    fetch()
 }
 </script>
 
