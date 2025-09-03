@@ -8,17 +8,10 @@ import { useFetcher } from '@/services/useFetcher.ts'
 import { fetchForm } from '@/services/forms.ts'
 import { useRoute } from 'vue-router'
 
-
 const { params } = useRoute()
 
 const paramsId = Number.parseInt(typeof params.id === 'string' ? params.id : '0')
-const { data, query } = useFetcher(async () => await fetchForm(paramsId))
-
-watch(
-    () => params.id,
-    () => query(),
-    { immediate: true },
-)
+const { data } = useFetcher(async () => await fetchForm(paramsId), [params.id])
 
 const providerValue = getFormProvider(paramsId)
 

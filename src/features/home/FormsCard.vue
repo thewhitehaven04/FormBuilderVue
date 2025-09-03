@@ -9,7 +9,7 @@ import {
     ProgressSpinner,
     useToast,
 } from 'primevue'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { useFetcher } from '@/services/useFetcher.ts'
 import { deleteForm, fetchForms } from '@/services/forms.ts'
 import FormPreview from '@/features/home/FormPreview.vue'
@@ -25,7 +25,7 @@ const activeOptions = ref(options[1].value)
 
 const toast = useToast()
 
-const { data, query, isPending } = useFetcher(
+const { data, isPending, refetch } = useFetcher(
     async () =>
         await fetchForms({
             skip: 0,
@@ -33,13 +33,12 @@ const { data, query, isPending } = useFetcher(
             text: searchQuery.value,
             isAscending: activeOptions.value,
         }),
+    [searchQuery, activeOptions],
 )
-
-watch([searchQuery, activeOptions], () => query(), { immediate: true })
 
 const handleRemove = (formId: number) => {
     deleteForm([formId])
-    query()
+    refetch()
 }
 
 const handleShare = async (formId: number) => {

@@ -1,12 +1,12 @@
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
-export function useFetcher<T>(func: () => Promise<T>) {
+export function useFetcher<T>(func: () => Promise<T>, reactiveDeps: unknown[] | (() => unknown)) {
     const data = ref<T | null>(null)
     const hasError = ref(false)
     const isPending = ref(true)
     const isFetching = ref(false)
 
-    const query = async () => {
+    const refetch = async () => {
         try {
             isFetching.value = true
             data.value = await func()
@@ -18,5 +18,7 @@ export function useFetcher<T>(func: () => Promise<T>) {
         }
     }
 
-    return { data, hasError, isPending, isFetching, query }
+    watch(reactiveDeps, () => refetch(), { immediate: true })
+
+    return { data, hasError, isPending, isFetching, refetch }
 }

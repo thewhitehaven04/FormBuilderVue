@@ -5,19 +5,13 @@ import SubmissionTable from '@/features/submissions/SubmissionTable.vue'
 import { fetchFormSubmissions } from '@/services/submissions'
 import { useFetcher } from '@/services/useFetcher'
 import { Card, ProgressSpinner } from 'primevue'
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 const { params } = useRoute()
 const formId = Number.parseInt(typeof params.id === 'string' ? params.id : '0')
 
-const { data, isPending, query } = useFetcher(async () => await fetchFormSubmissions(formId))
-
-watch(
-    () => params.id,
-    () => query(),
-    { immediate: true },
-)
+const { data, isPending } = useFetcher(async () => await fetchFormSubmissions(formId), [formId])
 
 const columns = computed(() =>
     data.value

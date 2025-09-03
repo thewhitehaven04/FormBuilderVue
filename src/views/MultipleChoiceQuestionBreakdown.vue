@@ -4,19 +4,13 @@ import { fetchAnswers } from '@/services/submissions'
 import { useFetcher } from '@/services/useFetcher'
 import { Card, ProgressSpinner } from 'primevue'
 import Chart from 'primevue/chart'
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 const { params } = useRoute()
 const questionId = Number.parseInt(typeof params.questionId === 'string' ? params.questionId : '0')
 
-const { data, isPending, query } = useFetcher(async () => await fetchAnswers(questionId))
-
-watch(
-    () => questionId,
-    () => query(),
-    { immediate: true },
-)
+const { data, isPending } = useFetcher(async () => await fetchAnswers(questionId), [questionId])
 
 const stats = computed(() => getBar(data.value))
 </script>

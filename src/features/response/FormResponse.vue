@@ -14,15 +14,9 @@ import { submitResponse } from '@/services/submissions'
 import { formatTimer } from '@/features/response/helpers'
 
 const { formId } = defineProps<{ formId: number }>()
-const { data, query } = useFetcher(async () => await fetchForm(formId))
+const { data } = useFetcher(async () => await fetchForm(formId), [formId])
 const router = useRouter()
 const toast = useToast()
-
-watch(
-    () => formId,
-    () => query(),
-    { immediate: true },
-)
 
 const { handleSubmit, setValues, isSubmitting } = useForm<TAnswerForm>({
     validationSchema: typedSchema,
