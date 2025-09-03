@@ -1,19 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import SignIn from '@/views/SignIn.vue'
-import SignUp from '@/views/SignUp.vue'
 import LayoutView from '@/views/LayoutView.vue'
 import { useUserStore } from '@/stores/user.ts'
-import ProfileView from '@/views/ProfileView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
-import FormBuilder from '@/views/FormBuilder.vue'
-import HomeView from '@/views/HomeView.vue'
-import FormEditor from '@/views/FormEditor.vue'
-import FormResponses from '@/views/FormResponses.vue'
-import FormResponseWrapper from '@/views/FormResponseWrapper.vue'
 import { fetchForm } from '@/services/forms'
-import NoAccess from '@/views/NoAccess.vue'
-import SingleChoiceQuestionBreakdown from '@/views/SingleChoiceQuestionBreakdown.vue'
-import MultipleChoiceQuestionBreakdown from '@/views/MultipleChoiceQuestionBreakdown.vue'
+
+const HomeView = () => import('@/views/HomeView.vue')
+const ProfileView = () => import('@/views/ProfileView.vue')
+const FormBuilder = () => import('@/views/FormBuilder.vue')
+const FormEditor = () => import('@/views/FormEditor.vue')
+const FormResponses = () => import('@/views/FormResponses.vue')
+const FormResponseWrapper = () => import('@/views/FormResponseWrapper.vue')
+const NoAccess = () => import('@/views/NoAccess.vue')
+const SingleChoiceQuestionBreakdown = () => import('@/views/SingleChoiceQuestionBreakdown.vue')
+const MultipleChoiceQuestionBreakdown = () => import('@/views/MultipleChoiceQuestionBreakdown.vue')
+const SignIn = () => import('@/views/SignIn.vue')
+const SignUp = () => import('@/views/SignUp.vue')
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
