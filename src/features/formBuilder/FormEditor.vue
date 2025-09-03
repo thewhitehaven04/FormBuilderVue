@@ -1,22 +1,15 @@
 <script setup lang="ts">
-import { InputText, Textarea } from 'primevue'
 import { Card } from 'primevue'
-import { useFormContext } from 'vee-validate'
-import type { IForm } from '@/features/formBuilder/useFormBuilder.ts'
-
-const { defineField } = useFormContext<IForm>()
-
-const [title, titleProps] = defineField('title')
-const [description, descriptionProps] = defineField('description')
+import FormInput from '@/components/FormInput.vue'
 </script>
 
 <template>
     <Card class="editor">
         <template #title>
-            <InputText placeholder="Title" v-model="title" v-bind="titleProps" />
+            <FormInput name="title" placeholder="Title" />
         </template>
         <template #subtitle>
-            <Textarea placeholder="Description" v-model="description" v-bind="descriptionProps"/>
+            <FormInput name="description" placeholder="Description" />
         </template>
     </Card>
 </template>

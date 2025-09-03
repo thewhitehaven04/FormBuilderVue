@@ -76,7 +76,10 @@ const isSaveDisabled = computed(() => questions.fields.value.length === 0)
             icon="pi pi-save"
             icon-pos="left"
             :disabled="isSaveDisabled"
-            v-tooltip.top="'You need to add at least one question to save the form'"
+            v-tooltip="{ showDelay: 300 }"
+            v-tooltip.top="
+                isSaveDisabled ? 'You need to add at least one question to save the form' : null
+            "
         />
         <Button
             v-else

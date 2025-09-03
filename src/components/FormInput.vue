@@ -8,10 +8,5 @@ const { value, handleBlur, handleReset, handleChange } = useField<string>(() => 
 </script>
 
 <template>
-    <InputText
-        v-model="value"
-        @blur="handleBlur"
-        @reset="handleReset"
-        @change="handleChange"
-    />
+    <InputText v-model="value" @blur="handleBlur" @reset="handleReset" @change="handleChange" />
 </template>

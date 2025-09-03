@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { Button, Dialog, InputText, Message, IconField, InputIcon } from 'primevue'
+import { Button, Dialog, Message, IconField, InputIcon } from 'primevue'
 import { z } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import { ref } from 'vue'
 import { signUp } from '@/services/auth.ts'
-import { User, LucideMail, KeyRound } from 'lucide-vue-next'
 import router from '@/router'
+import FormInput from '@/components/FormInput.vue'
 
 const schema = z.object({
     name: z.string().min(1),
@@ -19,16 +19,9 @@ const schema = z.object({
 type TFormSchema = z.infer<typeof schema>
 const signUpSchema = toTypedSchema(schema)
 
-const { defineField, errors, handleSubmit, handleReset, submitCount } = useForm<TFormSchema>({
+const { errors, handleSubmit, handleReset, submitCount } = useForm<TFormSchema>({
     validationSchema: signUpSchema,
 })
-
-const [name, nameProps] = defineField('name')
-const [lastName, lastNameProps] = defineField('lastName')
-const [email, emailProps] = defineField('email')
-const [password, passwordProps] = defineField('password')
-const [confirmPassword, confirmPasswordProps] = defineField('confirm')
-
 const isSuccessMessageShown = ref(false)
 
 const onSubmit = handleSubmit(async (data) => {
@@ -67,17 +60,8 @@ const onSubmit = handleSubmit(async (data) => {
         <form id="form" @submit="onSubmit" @reset="handleReset()">
             <div class="input-container">
                 <IconField>
-                    <InputIcon>
-                        <User />
-                    </InputIcon>
-                    <InputText
-                        type="text"
-                        name="name"
-                        placeholder="Name"
-                        v-model="name"
-                        v-bind="nameProps"
-                        required
-                    />
+                    <InputIcon class="pi pi-user" />
+                    <FormInput type="text" name="name" placeholder="Name" required />
                 </IconField>
                 <Message
                     v-if="!!errors.name && submitCount > 0"
@@ -89,17 +73,8 @@ const onSubmit = handleSubmit(async (data) => {
             </div>
             <div class="input-container">
                 <IconField>
-                    <InputIcon>
-                        <User />
-                    </InputIcon>
-                    <InputText
-                        type="text"
-                        name="lastname"
-                        placeholder="Last name"
-                        v-model="lastName"
-                        v-bind="lastNameProps"
-                        required
-                    />
+                    <InputIcon class="pi pi-user" />
+                    <FormInput type="text" name="lastname" placeholder="Last name" required />
                 </IconField>
                 <Message
                     v-if="!!errors.lastName && submitCount > 0"
@@ -111,17 +86,8 @@ const onSubmit = handleSubmit(async (data) => {
             </div>
             <div class="input-container">
                 <IconField>
-                    <InputIcon>
-                        <LucideMail />
-                    </InputIcon>
-                    <InputText
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        v-model="email"
-                        v-bind="emailProps"
-                        required
-                    />
+                    <InputIcon class="pi pi-envelope" />
+                    <FormInput type="email" name="email" placeholder="Email" required />
                 </IconField>
                 <Message
                     v-if="!!errors.email && submitCount > 0"
@@ -134,17 +100,8 @@ const onSubmit = handleSubmit(async (data) => {
 
             <div class="input-container">
                 <IconField>
-                    <InputIcon>
-                        <KeyRound />
-                    </InputIcon>
-                    <InputText
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        v-model="password"
-                        v-bind="passwordProps"
-                        required
-                    />
+                    <InputIcon class="pi pi-key" />
+                    <FormInput type="password" name="password" placeholder="Password" required />
                 </IconField>
                 <Message
                     v-if="!!errors.password && submitCount > 0"
@@ -157,15 +114,11 @@ const onSubmit = handleSubmit(async (data) => {
 
             <div class="input-container">
                 <IconField>
-                    <InputIcon>
-                        <KeyRound />
-                    </InputIcon>
-                    <InputText
+                    <InputIcon class="pi pi-key" />
+                    <FormInput
                         type="password"
                         name="confirm"
                         placeholder="Confirm Password"
-                        v-model="confirmPassword"
-                        v-bind="confirmPasswordProps"
                         required
                     />
                 </IconField>

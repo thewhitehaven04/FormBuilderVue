@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { Button, Dialog, InputText, Message, IconField, InputIcon } from 'primevue'
+import { Button, Dialog, Message, IconField, InputIcon } from 'primevue'
 import { RouterLink, useRouter } from 'vue-router'
 import { z } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import { ref } from 'vue'
 import * as Auth from '@/services/auth.ts'
-import { LucideMail, KeyRound } from 'lucide-vue-next'
+import FormInput from '@/components/FormInput.vue'
 
 defineEmits(['reset'])
 
@@ -19,11 +19,9 @@ const schema = z.object({
 const validationSchema = toTypedSchema(schema)
 type TSignInSchema = z.infer<typeof schema>
 
-const { handleSubmit, defineField } = useForm<TSignInSchema>({
+const { handleSubmit } = useForm<TSignInSchema>({
     validationSchema,
 })
-const [email, emailProps] = defineField('email')
-const [password, passwordProps] = defineField('password')
 const isErrorShown = ref(false)
 
 const onSubmit = handleSubmit(async (data) => {
@@ -58,27 +56,15 @@ const onSubmit = handleSubmit(async (data) => {
         <template #default>
             <form @submit="onSubmit">
                 <IconField>
-                    <InputIcon>
-                        <LucideMail />
-                    </InputIcon>
-                    <InputText
-                        name="email"
-                        type="email"
-                        placeholder="Email"
-                        v-model="email"
-                        v-bind="emailProps"
-                    />
+                    <InputIcon class="pi pi-envelope" />
+                    <FormInput name="email" type="email" placeholder="Email" />
                 </IconField>
                 <IconField>
-                    <InputIcon>
-                        <KeyRound />
-                    </InputIcon>
-                    <InputText
+                    <InputIcon class="pi pi-key" />
+                    <FormInput
                         name="password"
                         type="password"
                         placeholder="Password"
-                        v-model="password"
-                        v-bind="passwordProps"
                     />
                 </IconField>
                 <Button type="submit">Sign in</Button>

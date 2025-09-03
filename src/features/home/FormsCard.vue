@@ -25,7 +25,7 @@ const activeOptions = ref(options[1].value)
 
 const toast = useToast()
 
-const { data, isPending, refetch } = useFetcher(
+const { data, isPending, fetch } = useFetcher(
     async () =>
         await fetchForms({
             skip: 0,
@@ -38,7 +38,7 @@ const { data, isPending, refetch } = useFetcher(
 
 const handleRemove = (formId: number) => {
     deleteForm([formId])
-    refetch()
+    fetch()
 }
 
 const handleShare = async (formId: number) => {
