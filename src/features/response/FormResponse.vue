@@ -67,6 +67,9 @@ watch(
             }
         }, 1000)
     },
+    {
+        once: true,
+    },
 )
 
 const onSubmit = handleSubmit(async (data) => {
@@ -99,9 +102,9 @@ const onSubmit = handleSubmit(async (data) => {
             </template>
             <template #content>
                 <form id="response-form" @submit="onSubmit" @submit.prevent>
-                    <ul>
-                        <ProgressSpinner v-if="!data" />
-                        <li v-else v-for="(question, idx) in data.questions" :key="question.id">
+                    <ProgressSpinner v-if="!data" />
+                    <TransitionGroup v-else appear name="list" tag="ul">
+                        <li v-for="(question, idx) in data.questions" :key="question.id">
                             <OneLineResponse
                                 :idx="idx"
                                 v-if="question.question_type === 'oneLine'"
@@ -125,7 +128,7 @@ const onSubmit = handleSubmit(async (data) => {
                                 :options="question.options"
                             />
                         </li>
-                    </ul>
+                    </TransitionGroup>
                 </form>
             </template>
             <template #footer>
@@ -188,5 +191,27 @@ button {
 .timer {
     font-size: 16pt;
     font-weight: 500;
+}
+
+.list-move,
+.list-enter-active,
+.list-leave-active {
+    transition: all 1.4s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.list-enter-to,
+.list-leave-from {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.list-leave-active {
+    position: absolute;
 }
 </style>

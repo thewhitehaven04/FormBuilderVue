@@ -52,7 +52,7 @@ const handleShare = async (formId: number) => {
 </script>
 
 <template>
-    <Card class="card">
+    <Card>
         <template #title>
             <div class="title">
                 <IconField>
@@ -69,7 +69,7 @@ const handleShare = async (formId: number) => {
             </div>
         </template>
         <template #content>
-            <div class="content">
+            <div class="content active">
                 <ProgressSpinner v-if="isPending" />
                 <div class="no-forms-container" v-else-if="data?.length === 0">
                     <span>You haven't created any forms yet</span>
@@ -95,23 +95,11 @@ const handleShare = async (formId: number) => {
 </template>
 
 <style scoped>
-.card {
-    width: 100%;
-}
-
 .title {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-}
-
-.content {
-    width: 100%;
-    min-height: 250px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .grid {
